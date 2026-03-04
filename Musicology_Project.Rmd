@@ -1,0 +1,313 @@
+---
+title: "Musicology_Project"
+author: "Job van de Visse"
+date: "2026-02-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load packages}
+library(tidyverse)
+library(ggplot2)
+library(readr)
+library(dplyr)
+```
+
+```{r}
+Chester<- read.csv("Chester.csv")
+summary(Chester)
+
+Emily<- read.csv("Emily.csv")
+summary(Emily)
+```
+
+```{r}
+Chester |>
+  summarise(
+    mean_speechiness = mean(Speechiness),
+    mean_acousticness = mean(Acousticness),
+    mean_liveness = mean(Liveness),
+    sd_speechiness = sd(Speechiness),
+    sd_acousticness = sd(Acousticness),
+    sd_liveness = sd(Liveness),
+    median_speechiness = median(Speechiness),
+    median_acousticness = median(Acousticness),
+    median_liveness = median(Liveness),
+    mad_speechiness = mad(Speechiness),
+    mad_acousticness = mad(Acousticness),
+    mad_liveness = mad(Liveness)
+  )
+```
+
+```{r}
+
+# Combine datasets and add era identifier
+Chester <- Chester %>% mutate(Era = "Chester Bennington")
+Emily <- Emily %>% mutate(Era = "Emily Armstrong")
+
+combined_data <- bind_rows(Chester, Emily)
+
+# Select key audio features and reshape for plotting
+features_to_compare <- c("Energy", "Valence", "Danceability", 
+                         "Acousticness", "Speechiness", "Loudness")
+
+plot_data <- combined_data %>%
+  select(Era, all_of(features_to_compare)) %>%
+  pivot_longer(cols = -Era, names_to = "Feature", values_to = "Value")
+
+# Normalize Loudness to 0-1 scale for fair comparison
+plot_data <- plot_data %>%
+  mutate(Value = ifelse(Feature == "Loudness", 
+                        (Value + 60) / 60,  # Spotify loudness typically -60 to 0
+                        Value))
+
+# Create the visualization
+ggplot(plot_data, aes(x = Feature, y = Value, fill = Era)) +
+  geom_boxplot(alpha = 0.7, outlier.shape = 21, outlier.size = 2) +
+  scale_fill_manual(values = c("Chester Bennington" = "#D32F2F", 
+                               "Emily Armstrong" = "#1976D2"),
+                    name = NULL) +
+  labs(title = "Linkin Park's Sonic Evolution: Chester Bennington vs Emily Armstrong",
+       subtitle = "Comparing audio features across lead-singer transitions",
+       x = NULL,
+       y = "Feature Value (0-1 scale)",
+       caption = "Data: Spotify API | Loudness normalized to 0-1 scale") +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0),
+    plot.subtitle = element_text(size = 11, hjust = 0, color = "gray30"),
+    legend.position = "top",
+    legend.justification = "left",
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(angle = 0, hjust = 0.5)
+  )
+```
+
+
+```{r}
+# For exploring relationships between features
+ggplot(combined_data, aes(x = Energy, y = Valence, color = Era)) +
+  geom_point(alpha = 0.6, size = 3) +
+  geom_smooth(method = "lm", se = FALSE, linewidth = 1) +
+  scale_color_manual(values = c("Chester Bennington" = "#D32F2F", 
+                                "Emily Armstrong" = "#1976D2"),
+                     name = NULL) +
+  labs(title = "Energy vs. Emotional Tone: A Tale of Two Eras",
+       subtitle = "Does the new lineup maintain Linkin Park's signature intensity?",
+       x = "Energy Level",
+       y = "Valence (Musical Positivity)",
+       caption = "Data: Spotify API") +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = c(0.85, 0.15),
+    panel.grid.minor = element_blank()
+  )
+```
+
+
+```{r}
+# Faceted view of all major features
+ggplot(plot_data, aes(x = Era, y = Value, fill = Era)) +
+  geom_violin(alpha = 0.6, draw_quantiles = c(0.5)) +
+  geom_jitter(width = 0.1, alpha = 0.4, size = 1.5) +
+  facet_wrap(~Feature, scales = "free_y", ncol = 3) +
+  scale_fill_manual(values = c("Chester Bennington" = "#D32F2F", 
+                               "Emily Armstrong" = "#1976D2")) +
+  labs(title = "Linkin Park's Musical DNA: Before and After",
+       subtitle = "Track-level analysis reveals continuity and change",
+       x = NULL,
+       y = "Feature Value",
+       caption = "Data: Spotify API") +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "none",
+    strip.text = element_text(face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.minor = element_blank()
+  )
+```
+
+```{r Breakout evening 2}
+library(compmus)
+
+```
+
+```{r Breakout evening 2.1}
+
+wood <- read_csv("wood.csv")
+
+
+```
+
+```{r}
+wood |>
+  compmus_wrangle_chroma() |> 
+  mutate(pitches = map(pitches, compmus_normalise, "euclidean")) |>
+  compmus_gather_chroma() |> 
+  ggplot(
+    aes(
+      x = start + duration / 2,
+      width = duration,
+      y = pitch_class,
+      fill = value
+    )
+  ) +
+  geom_tile() +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
+  theme_minimal() +
+  scale_fill_viridis_c()
+```
+
+```{r Numb}
+ChromaNumb <- read_csv("ChromaNumb.csv")
+
+ChromaNumb|>
+  compmus_wrangle_chroma() |> 
+  mutate(pitches = map(pitches, compmus_normalise, "chebyshev")) |>
+  compmus_gather_chroma() |> 
+  ggplot(
+    aes(
+      x = start + duration / 2,
+      width = duration,
+      y = pitch_class,
+      fill = value
+    )
+  ) +
+  geom_tile() +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
+  theme_minimal() +
+  scale_fill_viridis_c()
+```
+
+```{r Ave Maria}
+
+## The Tallis Scholars
+tallis <- read_csv("tallis.csv")
+## La Chapelle Royale
+chapelle <- read_csv("chapelle.csv")
+## Oxford Camerata
+oxford <- read_csv("oxford.csv")
+## Chanticleer
+chanticleer <- read_csv("chanticleer.csv")
+## The Hilliard Ensemble
+hilliard <- read_csv("hilliard.csv")
+## The Gabrieli Consort
+gabrieli <- read_csv("gabrieli.csv")
+
+compmus_long_distance(
+  hilliard |> 
+    compmus_wrangle_chroma() |> 
+    mutate(pitches = map(pitches, compmus_normalise, "chebyshev")) |> 
+    filter(row_number() %% 50L == 0L),
+  oxford |> 
+    compmus_wrangle_chroma() |> 
+    mutate(pitches = map(pitches, compmus_normalise, "chebyshev")) |> 
+    filter(row_number() %% 50L == 0L),
+  feature = pitches,
+  method = "euclidean"
+) |>
+  filter(!is.nan(d)) |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = 50 * xduration,
+      y = ystart + yduration / 2,
+      height = 50 * yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_equal() +
+  labs(x = "Hilliard", y = "Oxford") +
+  theme_minimal() +
+  scale_fill_viridis_c(guide = NULL)
+```
+
+```{r Normal vs a capella}
+
+
+Chromaempti <- read_csv("ChromaEmpti.csv")
+
+Chromaemptiacapella <- read_csv("ChromaemptiAcapella.csv")
+
+
+Chromaempti|>
+  compmus_wrangle_chroma() |> 
+  mutate(pitches = map(pitches, compmus_normalise, "manhattan")) |>
+  compmus_gather_chroma() |> 
+  ggplot(
+    aes(
+      x = start + duration / 2,
+      width = duration,
+      y = pitch_class,
+      fill = value
+    )
+  ) +
+  geom_tile() +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
+  theme_minimal() +
+  scale_fill_viridis_c()
+
+Chromaemptiacapella|>
+  compmus_wrangle_chroma() |> 
+  mutate(pitches = map(pitches, compmus_normalise, "manhattan")) |>
+  compmus_gather_chroma() |> 
+  ggplot(
+    aes(
+      x = start + duration / 2,
+      width = duration,
+      y = pitch_class,
+      fill = value
+    )
+  ) +
+  geom_tile() +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
+  theme_minimal() +
+  scale_fill_viridis_c()
+
+
+
+
+
+
+compmus_long_distance(
+  Chromaempti |> 
+    compmus_wrangle_chroma() |> 
+    mutate(pitches = map(pitches, compmus_normalise, "manhattan")) |> 
+    filter(row_number() %% 50L == 0L),
+  Chromaemptiacapella |> 
+    compmus_wrangle_chroma() |> 
+    mutate(pitches = map(pitches, compmus_normalise, "manhattan")) |> 
+    filter(row_number() %% 50L == 0L),
+  feature = pitches,
+  method = "manhattan"
+) |>
+  filter(!is.nan(d)) |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = 50 * xduration,
+      y = ystart + yduration / 2,
+      height = 50 * yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_equal() +
+  labs(x = "Normal", y = "Acapella") +
+  theme_minimal() +
+  scale_fill_viridis_c(guide = NULL)
+```
+
+
+
+```{r}
+library(gitcreds)
+```
+

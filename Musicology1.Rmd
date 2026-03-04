@@ -1,0 +1,267 @@
+---
+title: "Musicology1"
+author: "Job van de Visse"
+date: "2026-02-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load packages}
+library(tidyverse)
+library(ggplot2)
+library(readr)
+```
+
+```{r}
+GrooveTable<- read.csv("Groovy.csv")
+summary(GrooveTable)
+
+DisneyTable<- read.csv("Disney_Hits.csv")
+summary(DisneyTable)
+
+grammy<- read.csv ("grammy.csv")
+
+edison<- read.csv ("Edisons_Pop_2026.csv")
+```
+
+```{r}
+DisneyTable |>
+  summarise(
+    mean_speechiness = mean(Speechiness),
+    mean_acousticness = mean(Acousticness),
+    mean_liveness = mean(Liveness),
+    sd_speechiness = sd(Speechiness),
+    sd_acousticness = sd(Acousticness),
+    sd_liveness = sd(Liveness),
+    median_speechiness = median(Speechiness),
+    median_acousticness = median(Acousticness),
+    median_liveness = median(Liveness),
+    mad_speechiness = mad(Speechiness),
+    mad_acousticness = mad(Acousticness),
+    mad_liveness = mad(Liveness)
+  )
+```
+
+```{r}
+awards <-
+  bind_rows(
+    grammy |> mutate(Category = "Grammys"),
+    edison |> mutate(Category = "Edisons")
+  )
+grammy |> ggplot(aes(x = Energy)) + geom_histogram(binwidth = 0.1)
+
+
+awards |>
+  ggplot(aes(x = Energy)) +
+  geom_histogram(binwidth = 0.1) +
+  facet_wrap(~Category)
+
+awards |>
+  ggplot(aes(x = Category, y = Energy)) +
+  geom_boxplot()
+
+awards |>
+  ggplot(aes(x = Category, y = Energy)) +
+  geom_violin()
+
+grammy |> ggplot(aes(x = Valence, y = Energy)) + geom_point() + geom_smooth()
+
+grammy |> ggplot(aes(x = Valence, y = Energy)) + geom_jitter() + geom_smooth()
+
+```
+
+
+```{r}
+awards |>                    # Start with awards.
+  mutate(
+    Mode = ifelse(Mode == 0, "Minor", "Major")
+  ) |>
+  ggplot(                     # Set up the plot.
+    aes(
+      x = Valence,
+      y = Energy,
+      size = Loudness,
+      colour = Mode
+    )
+  ) +
+  geom_point() +              # Scatter plot.
+  geom_rug(linewidth = 0.1) + # Add 'fringes' to show data distribution.
+  geom_text(                  # Add text labels from above.
+    aes(
+      x = Valence,
+      y = Energy,
+      label = Label
+    ),
+    data = 
+      tibble(
+        Label = c("Wacht op mij", "Soft Spine"),
+        Category = c("Edisons", "Grammys"),
+        Valence = c(0.271, 0.128),
+        Energy = c(0.166, 0.997)
+      ),
+    colour = "black",         # Override colour (not mode here).
+    size = 3,                 # Override size (not loudness here).
+    hjust = "left",           # Align left side of label with the point.
+    vjust = "center",         # Align vertical centre of label with the point.
+    nudge_x = 0.04            # Nudge the label slightly right.
+  ) +
+  facet_wrap(~ Category) +    # Separate charts per playlist.
+  scale_x_continuous(         # Fine-tune the x axis.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),   # Use grid-lines for quadrants only.
+    minor_breaks = NULL       # Remove 'minor' grid-lines.
+  ) +
+  scale_y_continuous(         # Fine-tune the y axis in the same way.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),
+    minor_breaks = NULL
+  ) +
+  scale_colour_brewer(        # Use the Color Brewer to choose a palette.
+    type = "qual",            # Qualitative set.
+    palette = "Paired"        # Name of the palette is 'Paired'.
+  ) +
+  scale_size_continuous(      # Fine-tune the sizes of each point.
+    trans = "exp",            # Use an exp transformation to emphasise loud.
+    guide = "none"            # Remove the legend for size.
+  ) +
+  theme_light() +             # Use a simpler theme.
+  labs(                       # Make the titles nice.
+    x = "Valence",
+    y = "Energy",
+    colour = "Mode"
+  )
+```
+
+```{r Cyka}
+HardbassTable<- read.csv("Hardbass.csv")
+summary(HardbassTable)
+
+
+
+```
+
+```{r}
+awards <-
+  bind_rows(
+    grammy |> mutate(Category = "Grammys"),
+    edison |> mutate(Category = "Edisons")
+  )
+grammy |> ggplot(aes(x = Energy)) + geom_histogram(binwidth = 0.1)
+
+
+awards |>
+  ggplot(aes(x = Energy)) +
+  geom_histogram(binwidth = 0.1) +
+  facet_wrap(~Category)
+
+awards |>
+  ggplot(aes(x = Category, y = Energy)) +
+  geom_boxplot()
+
+awards |>
+  ggplot(aes(x = Category, y = Energy)) +
+  geom_violin()
+
+grammy |> ggplot(aes(x = Valence, y = Energy)) + geom_point() + geom_smooth()
+
+grammy |> ggplot(aes(x = Valence, y = Energy)) + geom_jitter() + geom_smooth()
+
+```
+
+
+```{r}
+
+
+
+Nice <-
+  bind_rows(
+    GrooveTable|> mutate(Category = "Groove"),
+    HardbassTable|> mutate(Category = "Hardbass")
+  )
+
+
+
+Nice |>                    # Start with awards.
+  mutate(
+    Mode = ifelse(Mode == 0, "Minor", "Major")
+  ) |>
+  ggplot(                     # Set up the plot.
+    aes(
+      x = Valence,
+      y = Energy,
+      size = Loudness,
+      colour = Mode
+    )
+  ) +
+  geom_point() +              # Scatter plot.
+  geom_rug(linewidth = 0.1) + # Add 'fringes' to show data distribution.
+  geom_text(                  # Add text labels from above.
+    aes(
+      x = Valence,
+      y = Energy,
+      label = Label
+    ),
+    data = 
+      tibble(
+        Label = c("Narkotik kal", "Superstition"),
+        Category = c("Hardbass", "Groove"),
+        Valence = c(0.271, 0.128),
+        Energy = c(0.166, 0.997)
+      ),
+    colour = "black",         # Override colour (not mode here).
+    size = 3,                 # Override size (not loudness here).
+    hjust = "left",           # Align left side of label with the point.
+    vjust = "center",         # Align vertical centre of label with the point.
+    nudge_x = 0.04            # Nudge the label slightly right.
+  ) +
+  facet_wrap(~ Category) +    # Separate charts per playlist.
+  scale_x_continuous(         # Fine-tune the x axis.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),   # Use grid-lines for quadrants only.
+    minor_breaks = NULL       # Remove 'minor' grid-lines.
+  ) +
+  scale_y_continuous(         # Fine-tune the y axis in the same way.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),
+    minor_breaks = NULL
+  ) +
+  scale_colour_brewer(        # Use the Color Brewer to choose a palette.
+    type = "qual",            # Qualitative set.
+    palette = "Paired"        # Name of the palette is 'Paired'.
+  ) +
+  scale_size_continuous(      # Fine-tune the sizes of each point.
+    trans = "exp",            # Use an exp transformation to emphasise loud.
+    guide = "none"            # Remove the legend for size.
+  ) +
+  theme_light() +             # Use a simpler theme.
+  labs(                       # Make the titles nice.
+    x = "Valence",
+    y = "Energy",
+    colour = "Mode"
+  )
+
+
+
+
+Nice |>
+  ggplot(aes(x = Energy)) +
+  geom_histogram(binwidth = 0.1) +
+  facet_wrap(~Category)
+
+Nice |>
+  ggplot(aes(x = Category, y = Energy)) +
+  geom_boxplot()
+
+Nice |>
+  ggplot(aes(x = Category, y = Energy)) +
+  geom_violin()
+
+
+Nice |>
+  ggplot(aes(x = Category, y = Loudness)) +
+  geom_boxplot()
+```
+
