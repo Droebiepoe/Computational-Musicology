@@ -9,17 +9,17 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r, echo=FALSE}
 library(tidyverse)
 library(compmus)
 ```
 
-```{r}
+```{r ,echo=FALSE}
 Numb <-read_csv("./dat/ChromaNumb.csv")
 ```
 
 
-```{r Revised}
+```{r Revised }
 circshift <- function(v, n) {
   if (n == 0) v else c(tail(v, n), head(v, -n))
 }
