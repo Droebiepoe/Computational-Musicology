@@ -231,7 +231,8 @@ How to create a dashboard
 <div class="card tabset html-fill-item html-fill-container bslib-card" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
 <div class="card-header dashboard-card-no-title bslib-navs-card-title">
 
-<ul class="nav nav-tabs card-header-tabs" role="tablist" data-tabsetid="card-tabset-5"><li class="nav-item" role="presentation"><a href="#card-tabset-5-1" role="tab" data-toggle="tab" data-bs-toggle="tab" data-value="Example plot" aria-selected="true" class="nav-link active">Example plot</a></li><li class="nav-item" role="presentation"><a href="#card-tabset-5-2" role="tab" data-toggle="tab" data-bs-toggle="tab" data-value="Week 8" aria-selected="false" class="nav-link">Week 8</a></li></ul></div>
+<ul class="nav nav-tabs card-header-tabs" role="tablist" data-tabsetid="card-tabset-5"><li class="nav-item" role="presentation"><a href="#card-tabset-5-1" role="tab" data-toggle="tab" data-bs-toggle="tab" data-value="Example plot" aria-selected="true" class="nav-link active">Example plot</a></li><li class="nav-item" role="presentation"><a href="#card-tabset-5-2" role="tab" data-toggle="tab" data-bs-toggle="tab" data-value="Week 8" aria-selected="false" class="nav-link">Week 8</a></li><li class="nav-item" role="presentation"><a href="#card-tabset-5-3" role="tab" data-toggle="tab" data-bs-toggle="tab" data-value="Week 10" aria-selected="false" class="nav-link">Week 10</a></li></ul></div>
+
 
 
 <div class="tab-content html-fill-item html-fill-container" data-tabset-id="card-tabset-5"><div class="tab-pane active show html-fill-item html-fill-container" role="tabpanel" id="card-tabset-5-1"><div class="card-body html-fill-item html-fill-container" data-title="Example plot">
@@ -242,7 +243,7 @@ How to create a dashboard
 </div></div><div class="tab-pane html-fill-item html-fill-container" role="tabpanel" id="card-tabset-5-2"><div class="card-body html-fill-item html-fill-container" data-title="Week 8">
 <p>Here is a plot from the lab of week 8. It shows the chromagram for the “wood” dataset that we could download from the lab notes. Note that the <code>echo = FALSE</code> parameter must not be added to the code chunk, as we <em>do</em> see the R code printed in the dashboard.</p>
 <hr>
-<div class="code-copy-outer-scaffold html-fill-item html-fill-container"><div class="sourceCode cell-code html-fill-item html-fill-container" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>wood <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"wood.csv"</span>)</span>
+<div class="code-copy-outer-scaffold html-fill-item html-fill-container"><div class="sourceCode cell-code html-fill-item html-fill-container" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>wood <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"./dat/wood.csv"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>wood <span class="sc">|&gt;</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">compmus_wrangle_chroma</span>() <span class="sc">|&gt;</span> </span>
@@ -262,6 +263,30 @@ How to create a dashboard
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display html-fill-item html-fill-container">
 <img src="index_files/figure-html/week%208-1.png" class="img-fluid quarto-dashboard-img-contain">
+</div>
+</div></div><div class="tab-pane html-fill-item html-fill-container" role="tabpanel" id="card-tabset-5-3"><div class="card-body html-fill-item html-fill-container" data-title="Week 10">
+<p>Here is a plot from the lab of week 8. It shows the chromagram for the “wood” dataset that we could download from the lab notes. Note that the <code>echo = FALSE</code> parameter must not be added to the code chunk, as we <em>do</em> see the R code printed in the dashboard.</p>
+<hr>
+<div class="code-copy-outer-scaffold html-fill-item html-fill-container"><div class="sourceCode cell-code html-fill-item html-fill-container" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>wood <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"./dat/wood.csv"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>wood <span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">compmus_wrangle_chroma</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pitches =</span> <span class="fu">map</span>(pitches, compmus_normalise, <span class="st">"euclidean"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">compmus_gather_chroma</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> start <span class="sc">+</span> duration <span class="sc">/</span> <span class="dv">2</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">width =</span> duration,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> pitch_class,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> value</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Time (s)"</span>, <span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">fill =</span> <span class="st">"Magnitude"</span>) <span class="sc">+</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display html-fill-item html-fill-container">
+<img src="index_files/figure-html/week%2010-1.png" class="img-fluid quarto-dashboard-img-contain">
 </div>
 </div></div></div><bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
     <template>Expand</template>

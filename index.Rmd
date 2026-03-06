@@ -25,6 +25,10 @@ library(compmus)
 library(flexdashboard)
 ```
 
+```{r data, echo=FALSE}
+Numb <-read_csv("./dat/ChromaNumb.csv")
+```
+
 
 # Welcome to my main page!
 
@@ -181,7 +185,7 @@ Here is a plot from the lab of week 8. It shows the chromagram for the "wood" da
 ***
 
 ```{r week 8}
-wood <- read_csv("wood.csv")
+wood <- read_csv("./dat/wood.csv")
 
 wood |>
   compmus_wrangle_chroma() |> 
@@ -202,6 +206,38 @@ wood |>
 ```
 
 :::
+
+
+::: {.card title="Week 10"}
+
+Here is a plot from the lab of week 8. It shows the chromagram for the "wood" dataset that we could download from the lab notes. Note that the `echo = FALSE` parameter must not be added to the code chunk, as we *do* see the R code printed in the dashboard. 
+
+***
+
+```{r week 10}
+wood <- read_csv("./dat/wood.csv")
+
+wood |>
+  compmus_wrangle_chroma() |> 
+  mutate(pitches = map(pitches, compmus_normalise, "euclidean")) |>
+  compmus_gather_chroma() |> 
+  ggplot(
+    aes(
+      x = start + duration / 2,
+      width = duration,
+      y = pitch_class,
+      fill = value
+    )
+  ) +
+  geom_tile() +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
+  theme_minimal() +
+  scale_fill_viridis_c()
+```
+
+:::
+
+
 
 
 # This is another page tab
