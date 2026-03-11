@@ -1,0 +1,33 @@
+foobar2000 v2.24.3 / DR Meter v0.7
+log date: 2025-08-22 08:52:32
+
+--------------------------------------------------------------------------------
+Analyzed: Linkin Park / Meteora (2003 Warner Bros. 48442-2)
+--------------------------------------------------------------------------------
+
+DR         Peak           RMS       Duration Track
+--------------------------------------------------------------------------------
+DR9       -2.46 dBFS   -17.92 dBFS      0:13 01-Foreword
+DR4       -0.77 dBFS    -6.04 dBFS      3:08 02-Don't Stay
+DR5       -0.10 dBFS    -6.51 dBFS      3:34 03-Somewhere I Belong
+DR5       -0.10 dBFS    -6.02 dBFS      2:55 04-Lying From You
+DR5       -0.10 dBFS    -6.67 dBFS      2:44 05-Hit The Floor
+DR4       -0.10 dBFS    -6.32 dBFS      3:24 06-Easier To Run
+DR5       -0.08 dBFS    -7.00 dBFS      2:42 07-Faint
+DR5        0.00 dBFS    -6.41 dBFS      3:18 08-Figure.09
+DR5        0.00 dBFS    -6.73 dBFS      3:16 09-Breaking The Habit
+DR5        0.00 dBFS    -5.39 dBFS      2:56 10-From The Inside
+DR5       -0.10 dBFS    -6.68 dBFS      2:59 11-Nobody's Listening
+DR5       -0.10 dBFS    -7.55 dBFS      2:25 12-Session
+DR5       -0.10 dBFS    -6.31 dBFS      3:08 13-Numb
+--------------------------------------------------------------------------------
+
+Number of tracks:  13
+Official DR value: DR5
+
+Samplerate:        44100 Hz
+Channels:          2
+Bits per sample:   16
+Bitrate:           1047 kbps
+Codec:             FLAC
+================================================================================

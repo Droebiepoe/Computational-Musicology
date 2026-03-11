@@ -4,6 +4,7 @@ author: "Job van de Visse"
 format:
   dashboard:
     orientation: columns
+    theme: quartz
 ---
 
 ```{r setup, include=FALSE}
@@ -13,10 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, echo=FALSE }
 library(remotes)
 ```
-
-```{r}
-``` 
-
 
 ```{r imports,echo=FALSE}
 library(plotly)
@@ -166,12 +163,13 @@ Example plots are shown in the column to the right. Note that the `echo = FALSE`
 
 ### Row {.tabset}
 
+# Week 7
 ::: {.card title="Week 7"}
 
 W.I.P
 
 :::
-
+# Week 8
 ::: {.card title="Week 8"}
 
 Here is a plot from the lab of week 8. It shows the chromagram for the "wood" dataset that we could download from the lab notes. Note that the `echo = FALSE` parameter must not be added to the code chunk, as we *do* see the R code printed in the dashboard. 
@@ -201,12 +199,13 @@ wood |>
 
 :::
 
+# Week 9
 ::: {.card title="Week 9"}
 W.I.P
 
 :::
 
-
+# Week 10
 ::: {.card title="Week 10"}
 
 Here are 2 plots from the lab in week 10, a keygram and a Chordgram of the song *Numb* by *Linking Park*, using Temperley’s proposed improvements. The dominant chords seem to be F#:min, D:maj, Gb:maj and Gb:7, Where I expected F#min, D:maj, A:maj and E:maj.
@@ -351,8 +350,14 @@ Numb|>
 ```
 :::
 
+# Week 11
+::: {.card title="Week 11"}
 
+W.I.P
 
+***
+
+:::
 
 # Here will be a second page
 

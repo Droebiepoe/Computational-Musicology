@@ -255,7 +255,7 @@ twenty_five |>
   filter(row_number() %% 50L == 0L) |> 
   compmus_match_pitch_template(
     chord_templates,       
-    method = "euclidean",
+    method = "manhattan",
     norm = "manhattan"
   ) |>
   ggplot(
