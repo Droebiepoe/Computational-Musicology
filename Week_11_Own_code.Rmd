@@ -30,11 +30,12 @@ The_Emptiness_Machine_Novelty |>
 ```{r}
 The_Emptiness_Machine_ACT <- read_csv("./dat/The_Emptiness_Machine_ACT.csv")
 
-The_Emptiness_Machine_ACT  |> 
+The_Emptiness_Machine_ACT |> 
   pivot_longer(-TIME, names_to = "tempo") |> 
   mutate(tempo = as.numeric(tempo)) |> 
   ggplot(aes(x = TIME, y = tempo, fill = value)) +
   geom_raster() +
+  scale_y_continuous(transform = c("reciprocal", "reverse"), breaks = seq(50, 350, 100)) +    
   scale_fill_viridis_c(guide = "none") +
   labs(x = "Time (s)", y = "Tempo (BPM)") +
   theme_classic()
