@@ -53,3 +53,69 @@ The_Emptiness_Machine_DFT |>
   theme_classic()
 ```
 
+```{r}
+Heavy_Is_The_Crown_DFT <- read_csv("./dat/Heavy_Is_The_Crown_DFT.csv")
+Heavy_Is_The_Crown_DFT |> 
+  pivot_longer(-TIME, names_to = "tempo") |> 
+  mutate(tempo = as.numeric(tempo)) |> 
+  ggplot(aes(x = TIME, y = tempo, fill = value)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+```
+
+```{r}
+Faint_DFT <- read_csv("./dat/Faint_DFT.csv")
+Faint_DFT |> 
+  pivot_longer(-TIME, names_to = "tempo") |> 
+  mutate(tempo = as.numeric(tempo)) |> 
+  ggplot(aes(x = TIME, y = tempo, fill = value)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+```
+
+```{r}
+Numb_DFT <- read_csv("./dat/Numb_DFT.csv")
+The_Emptiness_Machine_DFT |> 
+  pivot_longer(-TIME, names_to = "tempo") |> 
+  mutate(tempo = as.numeric(tempo)) |> 
+  ggplot(aes(x = TIME, y = tempo, fill = value)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+```
+
+```{r}
+# Helper function to extract dominant tempo from a DFT file
+get_dominant_tempo <- function(file_path, track_name) {
+  read_csv(file_path) |>
+    pivot_longer(-TIME, names_to = "tempo") |>
+    mutate(tempo = as.numeric(tempo)) |>
+    group_by(TIME) |>
+    slice_max(value, n = 1) |>
+    ungroup() |>
+    mutate(track = track_name)
+}
+
+# Load all 4 tracks
+all_tempos <- bind_rows(
+  get_dominant_tempo("./dat/The_Emptiness_Machine_DFT.csv", "The Emptiness Machine"),
+  get_dominant_tempo("./dat/Heavy_Is_The_Crown_DFT.csv",    "Heavy Is The Crown"),
+  get_dominant_tempo("./dat/Faint_DFT.csv",                 "Faint"),
+  get_dominant_tempo("./dat/Numb_DFT.csv",                  "Numb")
+)
+
+# Histogram
+all_tempos |>
+  ggplot(aes(x = tempo, fill = track)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 5, position = "dodge", alpha = 0.8) +
+  scale_x_continuous(breaks = seq(50, 350, 50)) +
+  labs(x = "Tempo (BPM)", y = "Density", fill = "Track",
+       title = "Dominant Tempo Distribution Across Tracks") +
+  theme_minimal()
+```
+
