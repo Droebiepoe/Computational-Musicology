@@ -348,10 +348,24 @@ Numb|>
   theme_minimal() +
   labs(x = "Time (s)", y = "")
 ```
+***
 :::
 
 # Week 11
-::: {.card title="Week 11"}
+
+## Column {width=20%}
+
+### Row {height=15%}
+
+::: {.card title="Explanation"}
+I chose to use the DFT of every track because the ACT often showed the beat in 1/16th, 1/8th, 1/4th and 1/2nd tempo, and double tempo, where DFT almost always shows the accurate or double tempo. I chose 4 tracks, 2 from each album/singer, because they are the most popular songs as well as quite comparable to the ear.
+:::
+
+### Row {height=85%}
+
+## Column {width=40%}
+
+::: {.card title="Noveltyplot The Emptiness Machine"}
 
 ```{r,echo=FALSE}
 library(tidyverse)
@@ -359,7 +373,7 @@ library(compmus)
 
 ```
 
-```{r}
+```{r, echo = FALSE}
 
 The_Emptiness_Machine_Novelty <- read_csv("./dat/The_Emptiness_Machine_Novelty.csv")
 
@@ -370,8 +384,13 @@ The_Emptiness_Machine_Novelty |>
   theme_minimal() +
   labs(x = "Time (s)", y = "Novelty")
 ```
+***
 
-```{r}
+:::
+
+::: {.card title="ACT The Emptiness Machine"}
+
+```{r, echo = FALSE}
 The_Emptiness_Machine_ACT <- read_csv("./dat/The_Emptiness_Machine_ACT.csv")
 
 The_Emptiness_Machine_ACT |> 
@@ -384,8 +403,13 @@ The_Emptiness_Machine_ACT |>
   labs(x = "Time (s)", y = "Tempo (BPM)") +
   theme_classic()
 ```
+***
+:::
 
-```{r}
+## Column {width=40%}
+::: {.card title="DFT The Emptiness Machine"}
+Real BPM: 184
+```{r, echo = FALSE}
 The_Emptiness_Machine_DFT <- read_csv("./dat/The_Emptiness_Machine_DFT.csv")
 The_Emptiness_Machine_DFT |> 
   pivot_longer(-TIME, names_to = "tempo") |> 
@@ -396,8 +420,12 @@ The_Emptiness_Machine_DFT |>
   labs(x = "Time (s)", y = "Tempo (BPM)") +
   theme_classic()
 ```
+***
+:::
 
-```{r}
+::: {.card title="DFT Heavy Is The Crown"}
+Real BPM: 128
+```{r, echo = FALSE}
 Heavy_Is_The_Crown_DFT <- read_csv("./dat/Heavy_Is_The_Crown_DFT.csv")
 Heavy_Is_The_Crown_DFT |> 
   pivot_longer(-TIME, names_to = "tempo") |> 
@@ -408,8 +436,12 @@ Heavy_Is_The_Crown_DFT |>
   labs(x = "Time (s)", y = "Tempo (BPM)") +
   theme_classic()
 ```
+***
+:::
 
-```{r}
+::: {.card title="DFT Faint"}
+Real BPM: 135
+```{r, echo = FALSE}
 Faint_DFT <- read_csv("./dat/Faint_DFT.csv")
 Faint_DFT |> 
   pivot_longer(-TIME, names_to = "tempo") |> 
@@ -420,8 +452,12 @@ Faint_DFT |>
   labs(x = "Time (s)", y = "Tempo (BPM)") +
   theme_classic()
 ```
+***
+:::
 
-```{r}
+::: {.card title="DFT Numb"}
+Real BPM: 110
+```{r, echo = FALSE}
 Numb_DFT <- read_csv("./dat/Numb_DFT.csv")
 The_Emptiness_Machine_DFT |> 
   pivot_longer(-TIME, names_to = "tempo") |> 
@@ -432,14 +468,37 @@ The_Emptiness_Machine_DFT |>
   labs(x = "Time (s)", y = "Tempo (BPM)") +
   theme_classic()
 ```
-
-
 ***
-
 :::
 
-# Here will be a second page
+::: {.card title="Histogram of Tempi"}
+Just like in the DFT's it is based on, this histogram shows clear signs of double-time counting. where only "The Emptiness Machine" shows the right tempo.
+```{r,echo=FALSE}
+# Helper function to extract dominant tempo from a DFT file
+get_dominant_tempo <- function(file_path, track_name) {
+  read_csv(file_path) |>
+    pivot_longer(-TIME, names_to = "tempo") |>
+    mutate(tempo = as.numeric(tempo)) |>
+    group_by(TIME) |>
+    slice_max(value, n = 1) |>
+    ungroup() |>
+    mutate(track = track_name)
+}
 
-::: {.card title="Second page tab"}
-Work in progress.
+# Load all 4 tracks
+all_tempos <- bind_rows(
+  get_dominant_tempo("./dat/The_Emptiness_Machine_DFT.csv", "The Emptiness Machine"),
+  get_dominant_tempo("./dat/Heavy_Is_The_Crown_DFT.csv",    "Heavy Is The Crown"),
+  get_dominant_tempo("./dat/Faint_DFT.csv",                 "Faint"),
+  get_dominant_tempo("./dat/Numb_DFT.csv",                  "Numb")
+)
+
+# Histogram
+library(ggridges)
+
+all_tempos |>
+  ggplot(aes(x = tempo, y = track, fill = track)) +
+  geom_density_ridges(alpha = 0.7) +
+  theme_minimal()
+```
 :::
