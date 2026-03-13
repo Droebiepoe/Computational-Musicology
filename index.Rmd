@@ -353,7 +353,86 @@ Numb|>
 # Week 11
 ::: {.card title="Week 11"}
 
-W.I.P()
+```{r,echo=FALSE}
+library(tidyverse)
+library(compmus)
+
+```
+
+```{r}
+
+The_Emptiness_Machine_Novelty <- read_csv("./dat/The_Emptiness_Machine_Novelty.csv")
+
+The_Emptiness_Machine_Novelty |>
+  ggplot(aes(x = TIME, y = VALUE)) +
+  geom_line() +
+  xlim(0, 30) +                         # Adjust the limits to the desired time range
+  theme_minimal() +
+  labs(x = "Time (s)", y = "Novelty")
+```
+
+```{r}
+The_Emptiness_Machine_ACT <- read_csv("./dat/The_Emptiness_Machine_ACT.csv")
+
+The_Emptiness_Machine_ACT |> 
+  pivot_longer(-TIME, names_to = "tempo") |> 
+  mutate(tempo = as.numeric(tempo)) |> 
+  ggplot(aes(x = TIME, y = tempo, fill = value)) +
+  geom_raster() +
+  scale_y_continuous(transform = c("reciprocal", "reverse"), breaks = seq(50, 350, 100)) +    
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+```
+
+```{r}
+The_Emptiness_Machine_DFT <- read_csv("./dat/The_Emptiness_Machine_DFT.csv")
+The_Emptiness_Machine_DFT |> 
+  pivot_longer(-TIME, names_to = "tempo") |> 
+  mutate(tempo = as.numeric(tempo)) |> 
+  ggplot(aes(x = TIME, y = tempo, fill = value)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+```
+
+```{r}
+Heavy_Is_The_Crown_DFT <- read_csv("./dat/Heavy_Is_The_Crown_DFT.csv")
+Heavy_Is_The_Crown_DFT |> 
+  pivot_longer(-TIME, names_to = "tempo") |> 
+  mutate(tempo = as.numeric(tempo)) |> 
+  ggplot(aes(x = TIME, y = tempo, fill = value)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+```
+
+```{r}
+Faint_DFT <- read_csv("./dat/Faint_DFT.csv")
+Faint_DFT |> 
+  pivot_longer(-TIME, names_to = "tempo") |> 
+  mutate(tempo = as.numeric(tempo)) |> 
+  ggplot(aes(x = TIME, y = tempo, fill = value)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+```
+
+```{r}
+Numb_DFT <- read_csv("./dat/Numb_DFT.csv")
+The_Emptiness_Machine_DFT |> 
+  pivot_longer(-TIME, names_to = "tempo") |> 
+  mutate(tempo = as.numeric(tempo)) |> 
+  ggplot(aes(x = TIME, y = tempo, fill = value)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+```
+
 
 ***
 
