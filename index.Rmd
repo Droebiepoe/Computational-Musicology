@@ -5,6 +5,7 @@ format:
   dashboard:
     orientation: columns
     theme: quartz
+    scrolling: true
 ---
 
 ```{r setup, include=FALSE}
@@ -27,137 +28,22 @@ Numb <-read_csv("./dat/ChromaNumb.csv")
 ```
 
 
-# Welcome to my main page!
+# Corpus 
 
-## Column
+## Column {width=55%}
 
 
 ### Row {height=20%}
+
+![](./dat/Meteora.jpg)
+![](./dat/FromZero.png)
+
 ::: {.card}
 My portfolio will be about the difference in Linkin Park sound since the lead singer change.
 
 :::
 
-### Row {height=80%}
-
-::: {.card title="R Markdown"}
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-
-Note that if you're using the preamble that I used, there is no **Knit** button, but rather a **Render** button. This generates a local preview of your webpage in your browser. A local preview means that what you see is not yet pushed to the internet. You need to commit and push your changes to Github for other people to see the changes.
-
-
-:::
-
-
-
-## Column
-### Row {height=20%}
-
-::: {.card title="How to create a dashboard"}
-
-This column explains how to create a dashboard. Go through the tabs to see specific information.
-
-:::
-
-### Row {.tabset}
-
-::: {.card title="Rows/Columns"}
-Using a single hashtag creates a tab in the navbar. 
-
-Using double hashtags creates a new column. Using triple hashtags creates a new row. You can specify the width or the height of a row/column like so: 
-
-`### Row {height=80%}`
-
-
-***
-
-If you specify the width or height of one card in a column or row but not the other(s), the remaining card(s) will fill up the remaining space. If you do not specify a width or height for any row or column, they will fill the available space evenly.
-
-***
-
-
-The most useful way to section off parts of your page is through the use of this notation:
-
-`::: {.card title="Title"}` 
-
-`[content]`
-
-`:::` 
-
-
-This keeps everything within this "section" in one card. 
-
-:::
-
-
-
-::: {.card title="Dividing text"}
-
-This is the top part of a piece of text in a card. I've included a division bar through the use of: 
-
-`***`
-
-***
-
-The three asterisks create a division between a section of text within one column.
-
-:::
-
-
-
-::: {.card title="Tabs"}
-
-To make tabs, use the following code:
-
-`### Row {.tabset}`
-
-Then, you can use cards within that row for each separate tab:
-
-`::: {.card title="Tab 1"}` 
-
-`[content of tab 1]`
-
-`:::` 
-
-
-`::: {.card title="Tab 2"}` 
-
-`[content of tab 2]`
-
-`:::`
-
-And so on.
-
-:::
-
-
-
-::: {.card title="Plots"}
-You can add plots by inserting a code chunk with regular R code to create a plot:
-
-```{r example, echo=FALSE}
-
-```
-
-
-` ```{r title of code block, echo=FALSE}`
-
-`[code here]`
-
-``<- this accent grave is used to signify the end of the codeblock`
-
-Example plots are shown in the column to the right. Note that the `echo = FALSE` parameter is added to the code chunk to prevent printing of the R code that generated the plot on the dashboard.
-
-:::
-
-
+#
 
 ## Column
 
@@ -502,3 +388,128 @@ all_tempos |>
   theme_minimal()
 ```
 :::
+
+# Week 12
+::: {.card title="Week 12"}
+
+Right now, The graph does not tell us a lot because Chester has a much bigger repetoire than Emily does.
+Therefore I will compare the Album Meteora(Chester) With From Zero(Emily) next.
+:::
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(tidymodels)
+library(compmus)
+library(ggdendro)
+library(heatmaply)
+library(ggplot2)
+get_conf_mat <- function(fit) {
+  outcome <- .get_tune_outcome_names(fit)
+  fit |> 
+    collect_predictions() |> 
+    conf_mat(truth = outcome, estimate = .pred_class)
+}  
+
+get_pr <- function(fit) {
+  fit |> 
+    conf_mat_resampled() |> 
+    group_by(Prediction) |> mutate(precision = Freq / sum(Freq)) |> 
+    group_by(Truth) |> mutate(recall = Freq / sum(Freq)) |> 
+    ungroup() |> filter(Prediction == Truth) |> 
+    select(class = Prediction, precision, recall)
+}  
+Chester2<- read_csv("./dat/Chester.csv")
+Emily2 <- read_csv("./dat/Emily.csv")
+```
+
+```{r, echo=FALSE}
+LP <-
+  bind_rows(
+    Chester2|> mutate(Playlist = "Chester"),
+    Emily2|> mutate(Playlist = "Emily" )
+  )
+```
+
+```{r, echo=FALSE}
+LP_recipe <-
+  recipe(
+    Playlist ~
+      Danceability +
+      Energy +
+      Loudness +
+      Speechiness +
+      Acousticness +
+      Instrumentalness +
+      Liveness +
+      Valence +
+      Tempo +
+      `Duration (ms)`,
+    data = LP                    # Use the same name as the previous block.
+  ) |>
+  step_center(all_predictors()) |>
+  step_scale(all_predictors())      # Converts to z-scores.
+  # step_range(all_predictors())    # Sets range to [0, 1].
+```
+
+
+```{r, echo=FALSE}
+LP_cv <- LP |> vfold_cv(5)
+knn_model <-
+  nearest_neighbor(neighbors = 1) |>
+  set_mode("classification") |> 
+  set_engine("kknn")
+LP_knn <- 
+  workflow() |> 
+  add_recipe(LP_recipe) |> 
+  add_model(knn_model) |> 
+  fit_resamples(LP_cv, control = control_resamples(save_pred = TRUE))
+LP_knn |> get_pr()
+```
+As can be seen here, the prediction value for Emily is neglitable
+```{r, echo=FALSE}
+forest_model <-
+  rand_forest() |>
+  set_mode("classification") |> 
+  set_engine("ranger", importance = "impurity")
+LP_forest <- 
+  workflow() |> 
+  add_recipe(LP_recipe) |> 
+  add_model(forest_model) |> 
+  fit_resamples(
+    LP_cv, 
+    control = control_resamples(save_pred = TRUE)
+  )
+```
+
+```{r, echo=FALSE}
+LP_forest |> get_pr()
+```
+Here we can see the variables that are important for predicting the singer.
+```{r, echo=FALSE}
+workflow() |> 
+  add_recipe(LP_recipe) |> 
+  add_model(forest_model) |> 
+  fit(LP) |> 
+  pluck("fit", "fit", "fit") |>
+  ranger::importance() |> 
+  enframe() |> 
+  mutate(name = fct_reorder(name, value)) |> 
+  ggplot(aes(name, value)) + 
+  geom_col() + 
+  coord_flip() +
+  theme_minimal() +
+  labs(x = NULL, y = "Importance")
+```
+
+```{r, echo=FALSE}
+LP |>
+  ggplot(aes(x = Tempo, y = Energy, colour = Playlist, size = Loudness)) +
+  geom_point(alpha = 0.8) +
+  scale_color_viridis_d() +
+  labs(
+    x = "Tempo",
+    y = "Energy",
+    size = "Loudness",
+    colour = "Playlist"
+  )
+```
