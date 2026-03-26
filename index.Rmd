@@ -25,26 +25,53 @@ Numb <-read_csv("./dat/ChromaNumb.csv")
 ```
 
 
-# Corpus 
+# Corpus
 
-## Column {width=55%}
+## Column {width=100%}
+
+### Row {height=100%}
+
+::: {.card width=50%}
+My portfolio is about the difference in Linkin Park's sound since the lead singer change.
+Linkin Park(Previously known as Hybrid Theory) is a rock/Nu-metal band that gained popularity in the early 2000s with their unique hybrid of rap and metal. The band stopped performing in 2017 after the lead-singer Chester Bennington commited suicide.
+In 2024 the band made a comeback with A new, female lead-singer: Emily Armstrong.
+The band decided to start over with a woman as lead singer to give the band a new sound, without trying to replace the famous, and to many irreplacable, Chester Bennington. They started over: *From Zero*.
 
 
-### Row {height=20%}
-
-![](./dat/Meteora.jpg)
-![](./dat/FromZero.png)
-
-::: {.card}
-My portfolio will be about the difference in Linkin Park sound since the lead singer change.
 
 :::
 
-#
+::: {.card width=50%}
+![](./dat/Chester_Emily.jpg)
+:::
 
-## Column
+# Chester vs Emily
 
-### Row {.tabset}
+## Column {width=100%}
+
+::: {.card heigth=5%}
+Chester Bennington led the band through their iconic early era — raw, aggressive, emotionally intense. 
+Since Emily Armstrong joined in 2024, the band has taken a new direction with *From Zero*. 
+This portfolio analyses and compares the musical characteristics of both eras using computational musicology.
+:::
+
+### Row
+
+::: {.card}
+#### Chester Bennington era — *Meteora* (2003)
+
+![](./dat/Meteora.jpg)
+
+Chester's era defined Linkin Park's signature sound: distorted guitars, rap-rock fusion, and deeply personal lyrics.
+:::
+
+::: {.card}
+#### Emily Armstrong era — *From Zero* (2024)
+
+![](./dat/FromZero.png)
+
+Emily's debut with the band brings a fresh vocal style, with the band exploring new sonic territory.
+:::
 
 # Week 7
 ::: {.card title="Week 7"}
