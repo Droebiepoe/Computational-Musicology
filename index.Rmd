@@ -12,11 +12,8 @@ format:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, echo=FALSE }
-library(remotes)
-```
-
 ```{r imports,echo=FALSE}
+library(remotes)
 library(plotly)
 library(tidyverse)
 library(compmus)
