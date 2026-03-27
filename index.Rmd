@@ -32,11 +32,11 @@ Numb <-read_csv("./dat/ChromaNumb.csv")
 ### Row {height=100%}
 
 ::: {.card width=50%}
-My portfolio is about the difference in Linkin Park's sound since the lead singer change.
 Linkin Park(Previously known as Hybrid Theory) is a rock/Nu-metal band that gained popularity in the early 2000s with their unique hybrid of rap and metal. The band stopped performing in 2017 after the lead-singer Chester Bennington commited suicide.
 In 2024 the band made a comeback with A new, female lead-singer: Emily Armstrong.
 The band decided to start over with a woman as lead singer to give the band a new sound, without trying to replace the famous, and to many irreplacable, Chester Bennington. They started over: *From Zero*.
-
+The goal of this portfolio is to analyse the difference in sound since the lead-singer change.
+Because Chester Bennington has a much bigger repetoire, I will primarily be comparing *Meteora* with *From Zero*.
 
 
 :::
@@ -54,6 +54,26 @@ Chester Bennington led the band through their iconic early era — raw, aggressi
 Since Emily Armstrong joined in 2024, the band has taken a new direction with *From Zero*. 
 This portfolio analyses and compares the musical characteristics of both eras using computational musicology.
 :::
+
+
+
+### Row {height=100%}
+::: {.card}
+
+
+![](./dat/Chester.jpg)
+
+:::
+
+::: {.card}
+
+
+![](./dat/Emily.jpg)
+
+
+:::
+
+
 
 ### Row
 
