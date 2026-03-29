@@ -526,6 +526,42 @@ Chester's era defined Linkin Park's signature sound: distorted guitars, rap-rock
 ![](./dat/FromZero.png)
 
 Emily's debut with the band brings a fresh vocal style, with the band exploring new sonic territory.
+
+### Row
+
+::: {.card title= "Album Feature Comparison API"}
+```{r}
+# 3. Radar / spider chart of mean feature profiles
+library(ggradar)  # install.packages("ggradar") if needed
+Meteora <- read_csv("./dat/Meteora.csv")
+clean_comparison <- bind_rows(emily, Meteora)
+
+clean_comparison |>
+  group_by(`Album Name`) |>
+  summarise(across(all_of(features), \(x) mean(x, na.rm = TRUE))) |>
+  mutate(across(all_of(features), \(x) (x - min(x)) / (max(x) - min(x)))) |>
+  rename(group = `Album Name`) |>
+  ggradar(
+    font.radar = "sans",
+    grid.label.size = 4,
+    axis.label.size = 3,
+    group.line.width = 1,
+    group.point.size = 2
+  ) +
+  labs(title = "Album mean feature profiles") +
+  theme(
+    legend.position = "right",
+    legend.text = element_text(size = 7),
+    legend.key.size = unit(0.4, "cm")
+  )
+
+```
+Okay, this is not what I expected, at all. I understand the liveness and tempo, but the difference is probably very small.
+Furthermore, when looking back at my *From Zero heatmap* from *Emily's repetoire*, we can see that the song *Overflow* scores extremely high on acousticness compared to the rest. I suspect that this one song heavily skews this graph aswell.
+I guess that this plot is nuanced when comparing various albums, but very extreme when comparing two.
+:::
+
+
 :::
 
 # Pitch/ Chromagrams
@@ -624,6 +660,7 @@ key_templates <-
 
 ::: {.card}
 
+Here are 3 plots from the lab in week 10, a keygram and a Chordgram of the song *Numb* by *Linking Park*, using Temperley’s proposed improvements. The dominant chords seem to be F#:min, D:maj, Gb:maj and Gb:7, Where I expected F#min, D:maj, A:maj and E:maj.
 ```{r Chromagram Numb, echo=FALSE}
 NumbChroma <- read_csv("./dat/NumbChroma.csv")
 NumbChroma |> 
@@ -763,9 +800,9 @@ Clearly visible from this cepstrogram is that the song starts soft, with Mike Sh
 
 ::: {.card }
 
-```{r SSM,  echo=FALSE}
+```{r SSM, eval=FALSE, echo=FALSE}
 The_Emptiness_Machine_Timbre |>
-  compmus_wrangle_timbre() |> 
+compmus_wrangle_timbre() |> 
   filter(row_number() %% 50L == 0L) |> 
   mutate(timbre = map(timbre, compmus_normalise, "euclidean")) |>
   compmus_self_similarity(timbre, "cosine") |> 
@@ -784,164 +821,11 @@ The_Emptiness_Machine_Timbre |>
   theme_classic() +
   labs(x = "", y = "")
 ```
+
 This Self similarity matrix shows a clear structure with 3 major sections. The track does not clearly repeat itself each time but changes. My hypothesis is that this indicates the added intensity each repetition that is characteristic of Linkin Park songs. The intensity develops troughout the song as I discussed in the cepstrogram.
 I chose to plot only one SSM because of a lack of computing power (Rendering one takes 10min and I don't have a potato pc)
 :::
-# Tempograms
-
-# Week 9
-::: {.card title="Week 9"}
-W.I.P
-
-:::
-
-# Week 10
-::: {.card title="Week 10"}
-
-Here are 2 plots from the lab in week 10, a keygram and a Chordgram of the song *Numb* by *Linking Park*, using Temperley’s proposed improvements. The dominant chords seem to be F#:min, D:maj, Gb:maj and Gb:7, Where I expected F#min, D:maj, A:maj and E:maj.
-
-***
-
-```{r, echo=FALSE}
-library(tidyverse)
-library(compmus)
-```
-
-```{r ,echo=FALSE}
-Numb <-read_csv("./dat/ChromaNumb.csv")
-```
-
-
-```{r Revised, echo=FALSE }
-circshift <- function(v, n) {
-  if (n == 0) v else c(tail(v, n), head(v, -n))
-}
-
-#      C     C#    D     Eb    E     F     F#    G     Ab    A     Bb    B
-major_chord <-
-  c(   1,    0,    0,    0,    1,    0,    0,    1,    0,    0,    0,    0)
-minor_chord <-
-  c(   1,    0,    0,    1,    0,    0,    0,    1,    0,    0,    0,    0)
-seventh_chord <-
-  c(   1,    0,    0,    0,    1,    0,    0,    1,    0,    0,    1,    0)
-
-major_key <-
-  c(5.0, 2.0, 3.5, 2.0, 4.5, 4.0, 2.0, 4.5, 2.0, 3.5, 1.5, 4.0)
-minor_key <-
-  c(5.0, 2.0, 3.5, 4.5, 2.0, 4.0, 2.0, 4.5, 3.5, 2.0, 1.5, 4.0)
-
-chord_templates <-
-  tribble(
-    ~name, ~template,
-    "Gb:7", circshift(seventh_chord, 6),
-    "Gb:maj", circshift(major_chord, 6),
-    "Bb:min", circshift(minor_chord, 10),
-    "Db:maj", circshift(major_chord, 1),
-    "F:min", circshift(minor_chord, 5),
-    "Ab:7", circshift(seventh_chord, 8),
-    "Ab:maj", circshift(major_chord, 8),
-    "C:min", circshift(minor_chord, 0),
-    "Eb:7", circshift(seventh_chord, 3),
-    "Eb:maj", circshift(major_chord, 3),
-    "G:min", circshift(minor_chord, 7),
-    "Bb:7", circshift(seventh_chord, 10),
-    "Bb:maj", circshift(major_chord, 10),
-    "D:min", circshift(minor_chord, 2),
-    "F:7", circshift(seventh_chord, 5),
-    "F:maj", circshift(major_chord, 5),
-    "A:min", circshift(minor_chord, 9),
-    "C:7", circshift(seventh_chord, 0),
-    "C:maj", circshift(major_chord, 0),
-    "E:min", circshift(minor_chord, 4),
-    "G:7", circshift(seventh_chord, 7),
-    "G:maj", circshift(major_chord, 7),
-    "B:min", circshift(minor_chord, 11),
-    "D:7", circshift(seventh_chord, 2),
-    "D:maj", circshift(major_chord, 2),
-    "F#:min", circshift(minor_chord, 6),
-    "A:7", circshift(seventh_chord, 9),
-    "A:maj", circshift(major_chord, 9),
-    "C#:min", circshift(minor_chord, 1),
-    "E:7", circshift(seventh_chord, 4),
-    "E:maj", circshift(major_chord, 4),
-    "G#:min", circshift(minor_chord, 8),
-    "B:7", circshift(seventh_chord, 11),
-    "B:maj", circshift(major_chord, 11),
-    "D#:min", circshift(minor_chord, 3)
-  )
-
-key_templates <-
-  tribble(
-    ~name, ~template,
-    "Gb:maj", circshift(major_key, 6),
-    "Bb:min", circshift(minor_key, 10),
-    "Db:maj", circshift(major_key, 1),
-    "F:min", circshift(minor_key, 5),
-    "Ab:maj", circshift(major_key, 8),
-    "C:min", circshift(minor_key, 0),
-    "Eb:maj", circshift(major_key, 3),
-    "G:min", circshift(minor_key, 7),
-    "Bb:maj", circshift(major_key, 10),
-    "D:min", circshift(minor_key, 2),
-    "F:maj", circshift(major_key, 5),
-    "A:min", circshift(minor_key, 9),
-    "C:maj", circshift(major_key, 0),
-    "E:min", circshift(minor_key, 4),
-    "G:maj", circshift(major_key, 7),
-    "B:min", circshift(minor_key, 11),
-    "D:maj", circshift(major_key, 2),
-    "F#:min", circshift(minor_key, 6),
-    "A:maj", circshift(major_key, 9),
-    "C#:min", circshift(minor_key, 1),
-    "E:maj", circshift(major_key, 4),
-    "G#:min", circshift(minor_key, 8),
-    "B:maj", circshift(major_key, 11),
-    "D#:min", circshift(minor_key, 3)
-  )
-```
-
-
-```{r revised key}
-
-Numb |> 
-  compmus_wrangle_chroma() |> 
-  filter(row_number() %% 50L == 0L) |> 
-  compmus_match_pitch_template(
-    key_templates,         # Change to chord_templates if desired
-    method = "euclidean",  # Try different distance metrics
-    norm = "manhattan"     # Try different norms
-  ) |>
-  ggplot(
-    aes(x = start + duration / 2, width = 50 * duration, y = name, fill = d)
-  ) +
-  geom_tile() +
-  scale_fill_viridis_c(guide = "none") +
-  theme_minimal() +
-  labs(x = "Time (s)", y = "")
-```
-
-
-```{r revised chord}
-Numb|> 
-  compmus_wrangle_chroma() |> 
-  filter(row_number() %% 50L == 0L) |> 
-  compmus_match_pitch_template(
-    chord_templates,       
-    method = "manhattan",
-    norm = "manhattan"
-  ) |>
-  ggplot(
-    aes(x = start + duration / 2, width = 50 * duration, y = name, fill = d)
-  ) +
-  geom_tile() +
-  scale_fill_viridis_c(guide = "none") +
-  theme_minimal() +
-  labs(x = "Time (s)", y = "")
-```
-***
-:::
-
-# Week 11
+# Novelty and Tempograms
 
 ## Column {width=20%}
 
@@ -1093,13 +977,8 @@ all_tempos |>
 ```
 :::
 
-# Week 12
-::: {.card title="Week 12"}
-
-Right now, The graph does not tell us a lot because Chester has a much bigger repetoire than Emily does.
-Therefore I will compare the Album Meteora(Chester) With From Zero(Emily) next.
-:::
-
+# Predictive models
+::: {.card title="Predicting models"}
 ```{r, echo=FALSE}
 library(tidyverse)
 library(tidymodels)
@@ -1155,7 +1034,6 @@ LP_recipe <-
   # step_range(all_predictors())    # Sets range to [0, 1].
 ```
 
-
 ```{r, echo=FALSE}
 LP_cv <- LP |> vfold_cv(5)
 knn_model <-
@@ -1169,7 +1047,7 @@ LP_knn <-
   fit_resamples(LP_cv, control = control_resamples(save_pred = TRUE))
 LP_knn |> get_pr()
 ```
-As can be seen here, the prediction value for Emily is neglitable
+
 ```{r, echo=FALSE}
 forest_model <-
   rand_forest() |>
@@ -1188,6 +1066,13 @@ LP_forest <-
 ```{r, echo=FALSE}
 LP_forest |> get_pr()
 ```
+When using the whole repetoire, the model can predict the singer (Emily vs Chester) with 86% precision and 99% recall.
+As can be seen here, the prediction value for Emily is neglitable.
+The forest(second) model probably has the best predictive value, because it can pick up combination patterns such as high energy+ low acousticness and is better fit against irrelevant features bringing in noise.
+:::
+
+::: {.card title="predictive variables"}
+
 Here we can see the variables that are important for predicting the singer.
 ```{r, echo=FALSE}
 workflow() |> 
@@ -1204,18 +1089,82 @@ workflow() |>
   theme_minimal() +
   labs(x = NULL, y = "Importance")
 ```
+:::
+
+::: {.card title="Differences Meteora and From Zero"}
+If we want to compare the albums, we run the calculations again, but this time including only Meteora for Chester's repetoire.
+
 
 ```{r, echo=FALSE}
-LP |>
-  ggplot(aes(x = Tempo, y = Energy, colour = Playlist, size = Loudness)) +
-  geom_point(alpha = 0.8) +
-  scale_color_viridis_d() +
-  labs(
-    x = "Tempo",
-    y = "Energy",
-    size = "Loudness",
-    colour = "Playlist"
+Meteora<- read_csv("./dat/Meteora.csv")
+LP3 <-
+  bind_rows(
+    Meteora|> mutate(Playlist = "Chester"),
+    Emily2|> mutate(Playlist = "Emily" )
   )
+
+LP3_recipe <-
+  recipe(
+    Playlist ~
+      Danceability +
+      Energy +
+      Loudness +
+      Speechiness +
+      Acousticness +
+      Instrumentalness +
+      Liveness +
+      Valence +
+      Tempo +
+      `Duration (ms)`,
+    data = LP3                    # Use the same name as the previous block.
+  ) |>
+  step_center(all_predictors()) |>
+  step_scale(all_predictors())      # Converts to z-scores.
+  # step_range(all_predictors())    # Sets range to [0, 1].
+
+LP3_cv <- LP3 |> vfold_cv(5)
+knn_model <-
+  nearest_neighbor(neighbors = 1) |>
+  set_mode("classification") |> 
+  set_engine("kknn")
+LP3_knn <- 
+  workflow() |> 
+  add_recipe(LP3_recipe) |> 
+  add_model(knn_model) |> 
+  fit_resamples(LP3_cv, control = control_resamples(save_pred = TRUE))
+LP3_knn |> get_pr()
+
+forest_model <-
+  rand_forest() |>
+  set_mode("classification") |> 
+  set_engine("ranger", importance = "impurity")
+LP3_forest <- 
+  workflow() |> 
+  add_recipe(LP3_recipe) |> 
+  add_model(forest_model) |> 
+  fit_resamples(
+    LP3_cv, 
+    control = control_resamples(save_pred = TRUE)
+  )
+
+LP3_forest |> get_pr()
+
+workflow() |> 
+  add_recipe(LP3_recipe) |> 
+  add_model(forest_model) |> 
+  fit(LP3) |> 
+  pluck("fit", "fit", "fit") |>
+  ranger::importance() |> 
+  enframe() |> 
+  mutate(name = fct_reorder(name, value)) |> 
+  ggplot(aes(name, value)) + 
+  geom_col() + 
+  coord_flip() +
+  theme_minimal() +
+  labs(x = NULL, y = "Importance")
 ```
+Now we see that the model cannot predict well, but the most imporant predictive values and thus differences between the albums should be Energy and Acousticness
+:::
+
 # Contribution
 
