@@ -40,11 +40,11 @@ library(ggradar)
 ### Row {height=100%}
 
 ::: {.card width=50%}
-Linkin Park(Previously known as Hybrid Theory) is a rock/Nu-metal band that gained popularity in the early 2000s with their unique hybrid of rap and metal. The band stopped performing in 2017 after the lead-singer Chester Bennington commited suicide.
-In 2024 the band made a comeback with A new, female lead-singer: Emily Armstrong.
+Linkin Park (Previously known as Hybrid Theory) is a rock/Nu-metal band that gained popularity in the early 2000s with their unique hybrid of rap and metal. The band stopped performing in 2017 after the lead-singer Chester Bennington commited suicide.
+In 2024 the band made a comeback with a new, female lead-singer: Emily Armstrong.
 The band decided to start over with a woman as lead singer to give the band a new sound, without trying to replace the famous, and to many irreplacable, Chester Bennington. They started over: *From Zero*.
 The goal of this portfolio is to analyse the difference in sound since the lead-singer change.
-Because Chester Bennington has a much bigger repetoire, I will primarily be comparing *Meteora* with *From Zero*.
+Because Chester Bennington has a much bigger repetoire, I will primarily be comparing *Meteora* with *From Zero*. But I will also compare the older albums with eachother to find out what the diversity and characteristics of the *Linkin Park Sound* entail.
 
 
 :::
@@ -91,42 +91,37 @@ one_more_light_juice      <- safe_juice(chester_clean, "One More Light")
 
 ```
 
-## Column {width=100%, height=40%}
+## Column {width=100%, height=10%}
 
 ::: {.card heigth=5%}
 To get a better Idea of what we are comparing, lets have a look at the the Linkin Park Albums from 2000-2017, with Chester Bennington as Lead-Singer. On this page are the dendrograms and heatmaps of all the albums to see diversity within the albums. At the bottom of this page are a dendrogram, heatmap and spiderchart, illustrating the similarities and differences between albums. 
-Disclaimer: Be aware that these graphs are acquired using Spotify API, which is not a watertight indexing system. Results may vary.
+Disclaimer: Be aware that these graphs are acquired using Spotify API, which is not a watertight indexing system. Results are an estimation and could very well be wrong. 
 :::
 
 
 
-### Row {height=20%}
-::: {.card}
+### Row
+::: {.card title="Hybrid Theory: (2000)"}
 
 ![](./dat/Hybrid_Theory.jpg)
-Hybrid Theory: (2000)
 :::
 
-::: {.card}
-
+::: {.card title="Meteora: (2003)"}
 
 ![](./dat/Meteora2.jpg)
-Meteora(2003)
 
 :::
 
-::: {.card}
+::: {.card title="Minutes to Midnight: (2007)"}
 
 
 ![](./dat/Minutes_To_Midnight.jpg)
-Minutes to Midnight(2007)
 
 :::
-::: {.card}
+::: {.card title="A Thousand Suns: (2010)"}
 
 
 ![](./dat/A_Thousand_Suns.jpg)
-A Thousand Suns(2010)
 
 :::
 
@@ -186,27 +181,24 @@ heatmaply(a_thousand_suns_juice,     hclustfun = hclust, hclust_method = "averag
 ```
 
 ### Row
-::: {.card}
-
+::: {.card title="Living Things(2016)"}
 
 ![](./dat/Living_Things.jpg)
-Living Things(2016)
 
 :::
 
-::: {.card}
+::: {.card title="The Hunting Party(2014)"}
 
 
 ![](./dat/The_Hunting_Party.jpg)
-The Hunting Party(2014)
+
 
 :::
 
-::: {.card}
+::: {.card title="One More Light(2017)"}
 
 
 ![](./dat/One_More_Light.jpg)
-One More Light(2017)
 
 :::
 ### Row
@@ -256,7 +248,8 @@ heatmaply(one_more_light_juice, hclustfun = hclust, hclust_method = "average", d
 
 ### Row
 
-::: {.card}
+::: {.card title= " Album Pairing"}
+In the plot below we can see the clustering of the albums. Intuitively they seem to be quite correct. *Minutes to Midnight* and *One more light* are relatively low energy mellow albums with a softer sound. *Hybrid Theory* *LIVING THINGS* and *Meteora* are their loudest most high energy albums, often upbeat with a dominant distorted guitar and intense screaming vocals in the chorus.  *A thousand suns* and *The Hunting Party* are the albums I would call furthest away from "the Linkin Park sound"; They are experimental, contain more clean piano and general acoustics and contain more soft vocals. 
 ```{r, echo=FALSE}
 
 # ── Album-level comparison ────────────────────────────────────────────────────
@@ -281,7 +274,9 @@ dist(album_means, method = "euclidean") |>
 
 :::
 
-::: {.card}
+::: {.card Title= "Difference Quantisised}
+This heatmap shows the deviance of *A Thousand Suns* in terms of acousticness, it contains outliers on all fronts. The hunting party also shows a big standard deviation in almost every way. One can imagine them being paired together.
+We can see that *LIVING THINGS*, *Meteora* and *Hybrid Theory* indeed show a higher Energy and Loudness compared to other albums. That being said, *The Hunting Party* shows the same pattern but has a very different sound, explained by previous features.
 ```{r, echo=FALSE}
 
 
@@ -298,7 +293,7 @@ heatmaply(
 :::
 
 
-::: {.card}
+::: {.card Title= "Every album visualised in extremes"}
 ```{r, echo=FALSE}
 
 # 3. Radar / spider chart of mean feature profiles
@@ -374,7 +369,7 @@ dist(from_zero_juice, method = "euclidean") |>
 
 ::: {.card}
 **From Zero — Heatmap**
-Looking at this heatmap, the outlier of casualty surprises me quite a bit. The song is quite instrumental indeed, but also scores higher than average on speechiness. My hypothesis is that this could be because the song has a very dominant simple guitar riff and is very drum heavy.
+Looking at this heatmap, the outlier of *Casualty* surprises me quite a bit. The song is quite instrumental indeed, but also scores higher than average on speechiness. My hypothesis is that this could be because the song has a very dominant simple guitar riff and is very drum heavy.
 ```{r from_zero_heatmap, echo=FALSE}
 p <- heatmaply(
   from_zero_juice,
@@ -387,7 +382,7 @@ plotly::as_widget(p)
 :::
 
 ::: {.card}
-**From Zero — Tempo vs Energy**
+**From Zero: Tempo vs Energy**
 We can clearly see the inconsistencies of the spotify API in this graph. While most tempi are accurately plotted, *Cut the Bridge* is measured in half-tempo instead of the actual song BPM. Knowing the song, I think the loudness is also lower than to be expected.
 If we assume that the other measurements are correct, this album seems to be quite diverse. Most songs have a high energy, but speechiness and tempo differ quite a bit.
 ```{r from_zero_scatter, echo=FALSE}
@@ -430,7 +425,7 @@ emily |>
 
 ::: {.card}
 
-When comparing the two artists, what do we look at? Chester has been with the band for 17 years, Emily 2. Let's put that into perspective. Here we compare all the linkin park song based on the most important audio features from the spotify API.
+When comparing the two artists, what do we look at? Chester has been with the band for 17 years, Emily 2. Let's put that into perspective. Here we compare all the Linkin park song based on the most important audio features from the spotify API.
 ```{r comparing artists, echo=FALSE}
 
 # Combine Chester and Emily data, label by singer
@@ -466,10 +461,12 @@ bind_rows(chester_scatter, emily_scatter) |>
   theme_minimal()
 ```
 As we can see, this corpus is far too big for a detailed comparison.
+We can see that most songs are high energy, as is to be expected. Emily has little to no low energy songs in her repetoire (yet).
+
 :::
 
 ::: {.card}
-When we take a look at the heatmap of the average features of each album, we see that Meteora scores relatively "average" on each feature, scoring a bit higher on energy and loudness. Because this is their most popular album, it scores most average in feature comparison and it sounds most similar to my ear, I will be comparing *Meteora* with *From Zero*, in more detail
+When we take a look at the heatmap of the average features of each album, we see that *Meteora* scores relatively "average" on each feature, scoring a bit higher on energy and loudness. Because this is their most popular album, it scores most average in feature comparison and it sounds most similar to *From Zero* (In my opinion), I will be comparing *Meteora* with *From Zero*, in more detail
 ```{r, echo=FALSE}
 
 
@@ -526,11 +523,12 @@ Chester's era defined Linkin Park's signature sound: distorted guitars, rap-rock
 ![](./dat/FromZero.png)
 
 Emily's debut with the band brings a fresh vocal style, with the band exploring new sonic territory.
+:::
 
 ### Row
 
 ::: {.card title= "Album Feature Comparison API"}
-```{r}
+```{r, echo=FALSE}
 # 3. Radar / spider chart of mean feature profiles
 library(ggradar)  # install.packages("ggradar") if needed
 Meteora <- read_csv("./dat/Meteora.csv")
@@ -559,9 +557,6 @@ clean_comparison |>
 Okay, this is not what I expected, at all. I understand the liveness and tempo, but the difference is probably very small.
 Furthermore, when looking back at my *From Zero heatmap* from *Emily's repetoire*, we can see that the song *Overflow* scores extremely high on acousticness compared to the rest. I suspect that this one song heavily skews this graph aswell.
 I guess that this plot is nuanced when comparing various albums, but very extreme when comparing two.
-:::
-
-
 :::
 
 # Pitch/ Chromagrams
@@ -658,9 +653,9 @@ key_templates <-
 
 ### Row
 
-::: {.card}
+::: {.card Title= "Numb Keygram"}
 
-Here are 3 plots from the lab in week 10, a keygram and a Chordgram of the song *Numb* by *Linking Park*, using Temperley’s proposed improvements. The dominant chords seem to be F#:min, D:maj, Gb:maj and Gb:7, Where I expected F#min, D:maj, A:maj and E:maj.
+Here we can see a keygram and a Chordgram of the song *Numb* by *Linking Park*, using Temperley’s proposed improvements. The dominant chords seem to be F#:min, D:maj, Gb:maj and Gb:7, Where I expected F#min, D:maj, A:maj and E:maj.
 ```{r Chromagram Numb, echo=FALSE}
 NumbChroma <- read_csv("./dat/NumbChroma.csv")
 NumbChroma |> 
@@ -683,7 +678,7 @@ NumbChroma |>
 :::
 
 
-::: {.card}
+::: {.card Title= "Faint Keygram"}
 
 ```{r Chromagram Faint, echo=FALSE}
 FaintChroma <- read_csv("./dat/FaintChroma.csv")
@@ -707,7 +702,7 @@ FaintChroma |>
 :::
 
 
-::: {.card}
+::: {.card Title= "Somewhere I Belong Keygram"}
 
 ```{r Chromagram Somewhere I belong, echo=FALSE}
 SIBChroma <- read_csv("./dat/SIBChroma.csv")
@@ -736,6 +731,7 @@ SIBChroma |>
 ### Row
 ::: {.card title="DTW The Emptiness Machine"}
 Although this is the same song but acapella, clearly the differences are too big to form an informative Dynamic time warping plot.
+There seems to be a gap or some missing data, possibly influencing the noisy result. There are some diagonal lines visible but I do not think it is valid to name them as significant.
 ```{r, echo=FALSE}
 ChromaEmpti <- read_csv("./dat/ChromaEmpti.csv")
 ChromaEmptiAcapella <- read_csv("./dat/ChromaEmptiAcapella.csv")
@@ -773,7 +769,7 @@ compmus_long_distance(
 ## Column {width=100%}
 
 ### Row
-::: {.card }
+::: {.card Title= "The Emptiness Machine Cepstogram"}
 
 ```{r Cepstrogram, echo=FALSE}
 The_Emptiness_Machine_Timbre <- read_csv("./dat/The_Emptiness_Machine_Timbre.csv")
@@ -798,9 +794,9 @@ The_Emptiness_Machine_Timbre|>
 Clearly visible from this cepstrogram is that the song starts soft, with Mike Shinoda rapping, a synthesizer and some soft drums in the background. There are 2 distinct blocks in the plot when Emily Armstrong starts singing and the guitars and drums kick in loudly. The change happens at around 55 seconds, and at around 135 seconds with a short pause in between where Shinoda builds up the tension again.
 :::
 
-::: {.card }
+::: {.card "The Emptiness Machine Self Similarity Matrix"}
 
-```{r SSM, eval=FALSE, echo=FALSE}
+```{r SSM, echo=FALSE}
 The_Emptiness_Machine_Timbre |>
 compmus_wrangle_timbre() |> 
   filter(row_number() %% 50L == 0L) |> 
@@ -840,7 +836,7 @@ I chose to use the DFT of every track because the ACT often showed the beat in 1
 ## Column {width=40%}
 
 ::: {.card title="Noveltyplot The Emptiness Machine"}
-
+Looking at the noveltyplot, one would expect this song to start explosive relatively fast. However this plot is misleading. The peak you see is probably the attack of a highhat that is very loud compared to the rest of the intro. The 30second window of this noveltyplot is a bit small for this song has quite a long, soft intro. making the peakes relatively high where absolutely low.
 ```{r,echo=FALSE}
 library(tidyverse)
 library(compmus)
@@ -863,6 +859,7 @@ The_Emptiness_Machine_Novelty |>
 :::
 
 ::: {.card title="ACT The Emptiness Machine"}
+We can see that the ACT is very bad at predicting the tempo, where the top bar is correct.
 
 ```{r, echo = FALSE}
 The_Emptiness_Machine_ACT <- read_csv("./dat/The_Emptiness_Machine_ACT.csv")
@@ -883,6 +880,8 @@ The_Emptiness_Machine_ACT |>
 ## Column {width=40%}
 ::: {.card title="DFT The Emptiness Machine"}
 Real BPM: 184
+
+The DFT shows a much better result, it gets the real tempo as well as double-time, which isn't uncommon in rock music.
 ```{r, echo = FALSE}
 The_Emptiness_Machine_DFT <- read_csv("./dat/The_Emptiness_Machine_DFT.csv")
 The_Emptiness_Machine_DFT |> 
@@ -899,6 +898,8 @@ The_Emptiness_Machine_DFT |>
 
 ::: {.card title="DFT Heavy Is The Crown"}
 Real BPM: 128
+
+Here the DFT makes a less accurate prediction, capturing the 128 but also icluding double and triple time.
 ```{r, echo = FALSE}
 Heavy_Is_The_Crown_DFT <- read_csv("./dat/Heavy_Is_The_Crown_DFT.csv")
 Heavy_Is_The_Crown_DFT |> 
@@ -915,6 +916,8 @@ Heavy_Is_The_Crown_DFT |>
 
 ::: {.card title="DFT Faint"}
 Real BPM: 135
+
+This is the least accurate prediction for the dominant one is double time.
 ```{r, echo = FALSE}
 Faint_DFT <- read_csv("./dat/Faint_DFT.csv")
 Faint_DFT |> 
@@ -931,6 +934,8 @@ Faint_DFT |>
 
 ::: {.card title="DFT Numb"}
 Real BPM: 110
+
+Including another double time again.
 ```{r, echo = FALSE}
 Numb_DFT <- read_csv("./dat/Numb_DFT.csv")
 The_Emptiness_Machine_DFT |> 
@@ -946,7 +951,7 @@ The_Emptiness_Machine_DFT |>
 :::
 
 ::: {.card title="Histogram of Tempi"}
-Just like in the DFT's it is based on, this histogram shows clear signs of double-time counting. where only "The Emptiness Machine" shows the right tempo.
+Just like in the DFT's it is based on, this histogram shows clear signs of double-time counting ore more, where only "The Emptiness Machine" includes the right tempo.
 ```{r,echo=FALSE}
 # Helper function to extract dominant tempo from a DFT file
 get_dominant_tempo <- function(file_path, track_name) {
@@ -978,7 +983,7 @@ all_tempos |>
 :::
 
 # Predictive models
-::: {.card title="Predicting models"}
+::: {.card title="Predictive models"}
 ```{r, echo=FALSE}
 library(tidyverse)
 library(tidymodels)
@@ -1066,7 +1071,7 @@ LP_forest <-
 ```{r, echo=FALSE}
 LP_forest |> get_pr()
 ```
-When using the whole repetoire, the model can predict the singer (Emily vs Chester) with 86% precision and 99% recall.
+When using the whole repetoire, the model can predict the singer (Emily vs Chester) with 86% precision and 98% recall.
 As can be seen here, the prediction value for Emily is neglitable.
 The forest(second) model probably has the best predictive value, because it can pick up combination patterns such as high energy+ low acousticness and is better fit against irrelevant features bringing in noise.
 :::
