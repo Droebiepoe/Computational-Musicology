@@ -18,13 +18,25 @@ library(plotly)
 library(tidyverse)
 library(compmus)
 library(flexdashboard)
+library(tidymodels)
+library(ggdendro)
+library(heatmaply)
+library(ggplot2)
+library(ggradar)
 ```
 
 ```{r data, echo=FALSE}
 Numb <-read_csv("./dat/ChromaNumb.csv")
 ```
 
-
+```{css, echo=FALSE}
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+```
 # Corpus
 
 ## Column {width=100%}
@@ -44,6 +56,281 @@ Because Chester Bennington has a much bigger repetoire, I will primarily be comp
 ::: {.card width=50%}
 ![](./dat/Chester_Emily.jpg)
 :::
+
+# LP 2000-2017: Chesters Repetoire
+```{r Prefiltering, echo=FALSE}
+# Load data
+chester <- read_csv("./dat/Chester.csv")
+
+# Select only audio features used for clustering
+features <- c("Danceability", "Energy", "Loudness", "Speechiness",
+              "Acousticness", "Instrumentalness", "Liveness", "Valence", "Tempo")
+
+# Remove rows with missing feature values (e.g. "Foreword" interlude)
+chester_clean <- chester |>
+  filter(!is.na(Danceability)) |>
+  select(`Track Name`, `Album Name`, all_of(features))
+
+# ── Helper: filter, drop constant columns, and scale ─────────────────────────
+
+safe_juice <- function(data, album_name) {
+  data |>
+    filter(`Album Name` == album_name) |>
+    column_to_rownames("Track Name") |>
+    select(all_of(features)) |>
+    as.matrix() |>
+    (\(m) m[, apply(m, 2, sd, na.rm = TRUE) > 0])() |>  # drop constant columns
+    scale()
+}
+
+# ── Filter per album and create named matrices (juice) ────────────────────────
+
+hybrid_theory_juice       <- safe_juice(chester_clean, "Hybrid Theory (Bonus Edition)")
+meteora_juice             <- safe_juice(chester_clean, "Meteora")
+minutes_to_midnight_juice <- safe_juice(chester_clean, "Minutes to Midnight")
+a_thousand_suns_juice     <- safe_juice(chester_clean, "A Thousand Suns")
+living_things_juice       <- safe_juice(chester_clean, "LIVING THINGS")
+hunting_party_juice       <- safe_juice(chester_clean, "The Hunting Party")
+one_more_light_juice      <- safe_juice(chester_clean, "One More Light")
+
+```
+
+## Column {width=100%, height=40%}
+
+::: {.card heigth=5%}
+To get a better Idea of what we are comparing, lets have a look at the the Linkin Park Albums from 2000-2017, with Chester Bennington as Lead-Singer. On this page are the dendrograms and heatmaps of all the albums to see diversity within the albums. At the bottom of this page are a dendrogram, heatmap and spiderchart, illustrating the similarities and differences between albums. 
+Disclaimer: Be aware that these graphs are acquired using Spotify API, which is not a watertight indexing system. Results may vary.
+:::
+
+
+
+### Row {height=20%}
+::: {.card}
+
+![](./dat/Hybrid_Theory.jpg)
+Hybrid Theory: (2000)
+:::
+
+::: {.card}
+
+
+![](./dat/Meteora2.jpg)
+Meteora(2003)
+
+:::
+
+::: {.card}
+
+
+![](./dat/Minutes_To_Midnight.jpg)
+Minutes to Midnight(2007)
+
+:::
+::: {.card}
+
+
+![](./dat/A_Thousand_Suns.jpg)
+A Thousand Suns(2010)
+
+:::
+
+### Row
+```{r Hybrid Theory, echo=FALSE}
+# Hybrid Theory
+dist(hybrid_theory_juice, method = "euclidean") |>
+  hclust(method = "average") |>
+  dendro_data() |>
+  ggdendrogram() +
+  labs(title = "Hybrid Theory (Bonus Edition)")
+```
+
+```{r Meteora, echo=FALSE}
+# Meteora
+dist(meteora_juice, method = "euclidean") |>
+  hclust(method = "average") |>
+  dendro_data() |>
+  ggdendrogram() +
+  labs(title = "Meteora")
+```
+
+```{r Minutes to Midnight, echo=FALSE}
+# Minutes to Midnight
+dist(minutes_to_midnight_juice, method = "euclidean") |>
+  hclust(method = "average") |>
+  dendro_data() |>
+  ggdendrogram() +
+  labs(title = "Minutes to Midnight")
+
+```
+
+```{r A Thousand Suns, echo=FALSE}
+# A Thousand Suns
+dist(a_thousand_suns_juice, method = "euclidean") |>
+  hclust(method = "average") |>
+  dendro_data() |>
+  ggdendrogram() +
+  labs(title = "A Thousand Suns")
+```
+
+### Row
+```{r, echo=FALSE}
+heatmaply(hybrid_theory_juice,  hclustfun = hclust, hclust_method = "average", dist_method = "euclidean", main = "Hybrid Theory (Bonus Edition)")
+```
+
+```{r, echo=FALSE}
+heatmaply(meteora_juice,        hclustfun = hclust, hclust_method = "average", dist_method = "euclidean", main = "Meteora")
+```
+
+```{r, echo=FALSE}
+heatmaply(minutes_to_midnight_juice, hclustfun = hclust, hclust_method = "average", dist_method = "euclidean", main = "Minutes to Midnight")
+```
+
+```{r, echo=FALSE}
+heatmaply(a_thousand_suns_juice,     hclustfun = hclust, hclust_method = "average", dist_method = "euclidean", main = "A Thousand Suns")
+```
+
+### Row
+::: {.card}
+
+
+![](./dat/Living_Things.jpg)
+Living Things(2016)
+
+:::
+
+::: {.card}
+
+
+![](./dat/The_Hunting_Party.jpg)
+The Hunting Party(2014)
+
+:::
+
+::: {.card}
+
+
+![](./dat/One_More_Light.jpg)
+One More Light(2017)
+
+:::
+### Row
+
+
+```{r, echo=FALSE}
+# Living Things
+dist(living_things_juice, method = "euclidean") |>
+  hclust(method = "average") |>
+  dendro_data() |>
+  ggdendrogram() +
+  labs(title = "LIVING THINGS")
+```
+
+```{r, echo=FALSE}
+# The Hunting Party
+dist(hunting_party_juice, method = "euclidean") |>
+  hclust(method = "average") |>
+  dendro_data() |>
+  ggdendrogram() +
+  labs(title = "The Hunting Party")
+```
+
+```{r, echo=FALSE}
+# One More Light
+dist(one_more_light_juice, method = "euclidean") |>
+  hclust(method = "average") |>
+  dendro_data() |>
+  ggdendrogram() +
+  labs(title = "One More Light")
+```
+
+
+### Row
+
+```{r, echo=FALSE}
+heatmaply(living_things_juice,  hclustfun = hclust, hclust_method = "average", dist_method = "euclidean", main = "LIVING THINGS")
+```
+
+```{r, echo=FALSE}
+heatmaply(hunting_party_juice,  hclustfun = hclust, hclust_method = "average", dist_method = "euclidean", main = "The Hunting Party")
+```
+
+```{r, echo=FALSE}
+heatmaply(one_more_light_juice, hclustfun = hclust, hclust_method = "average", dist_method = "euclidean", main = "One More Light")
+```
+
+### Row
+
+::: {.card}
+```{r, echo=FALSE}
+
+# ── Album-level comparison ────────────────────────────────────────────────────
+
+# Build a summary matrix: one row per album, columns = mean of each feature
+album_means <- chester_clean |>
+  group_by(`Album Name`) |>
+  summarise(across(all_of(features), \(x) mean(x, na.rm = TRUE))) |>
+  column_to_rownames("Album Name") |>
+  as.matrix() |>
+  scale()  # scale so features are comparable across albums
+
+# 1. Dendrogram of albums
+dist(album_means, method = "euclidean") |>
+  hclust(method = "average") |>
+  dendro_data() |>
+  ggdendrogram() +
+  labs(title = "Album similarity (mean features, euclidean distance)")
+
+
+```
+
+:::
+
+::: {.card}
+```{r, echo=FALSE}
+
+
+# 2. Heatmap of albums
+heatmaply(
+  album_means,
+  hclustfun = hclust,
+  hclust_method = "average",
+  dist_method = "euclidean",
+  main = "Album comparison (mean feature profiles)"
+)
+```
+
+:::
+
+
+::: {.card}
+```{r, echo=FALSE}
+
+# 3. Radar / spider chart of mean feature profiles
+library(ggradar)  # install.packages("ggradar") if needed
+
+chester_clean |>
+  group_by(`Album Name`) |>
+  summarise(across(all_of(features), \(x) mean(x, na.rm = TRUE))) |>
+  mutate(across(all_of(features), \(x) (x - min(x)) / (max(x) - min(x)))) |>
+  rename(group = `Album Name`) |>
+  ggradar(
+    font.radar = "sans",
+    grid.label.size = 4,
+    axis.label.size = 3,
+    group.line.width = 1,
+    group.point.size = 2
+  ) +
+  labs(title = "Album mean feature profiles") +
+  theme(
+    legend.position = "right",
+    legend.text = element_text(size = 7),
+    legend.key.size = unit(0.4, "cm")
+  )
+
+```
+
+:::
+
 
 # Chester vs Emily
 
@@ -83,6 +370,7 @@ This portfolio analyses and compares the musical characteristics of both eras us
 ![](./dat/Meteora.jpg)
 
 Chester's era defined Linkin Park's signature sound: distorted guitars, rap-rock fusion, and deeply personal lyrics.
+Chester relaxes his voice far more.
 :::
 
 ::: {.card}
