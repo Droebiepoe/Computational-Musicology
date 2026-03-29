@@ -332,15 +332,167 @@ chester_clean |>
 :::
 
 
+# Emily's repetoire: From Zero
+
+## Row {height=40%}
+
+### Column {width=100%}
+
+
+::: {.card}
+Since Emily Armstrong joined Linkin Park in 2024, they made one album, *From Zero*.
+Below are the dendrogram, heatmap, and a scatterplot of the songs showing how they cluster by audio features filtered plotted on tempo, energy, loudness and speechiness.
+:::
+
+```{r from_zero_data, echo=FALSE}
+emily <- read_csv("./dat/Emily.csv")
+
+features <- c("Danceability", "Energy", "Loudness", "Speechiness",
+              "Acousticness", "Instrumentalness", "Liveness", "Valence", "Tempo")
+
+from_zero_juice <- emily |>
+  filter(!is.na(Danceability)) |>
+  filter(`Album Name` == "From Zero (Deluxe Edition)") |>
+  filter(`Track Name` != "From Zero (Intro)") |>
+  select(`Track Name`, all_of(features)) |>
+  column_to_rownames("Track Name") |>
+  as.matrix() |>
+  (\(m) m[, apply(m, 2, sd, na.rm = TRUE) > 0])() |>
+  scale()
+```
+
+## Row {height=60%}
+
+
+::: {.card}
+**From Zero — Dendrogram**
+
+```{r from_zero_dendrogram, echo=FALSE}
+dist(from_zero_juice, method = "euclidean") |>
+  hclust(method = "average") |>
+  dendro_data() |>
+  ggdendrogram() +
+  labs(title = "From Zero — song similarity (euclidean, average linkage)")
+```
+:::
+
+::: {.card}
+**From Zero — Heatmap**
+Looking at this heatmap, the outlier of casualty surprises me quite a bit. The song is quite instrumental indeed, but also scores higher than average on speechiness. My hypothesis is that this could be because the song has a very dominant simple guitar riff and is very drum heavy.
+```{r from_zero_heatmap, echo=FALSE}
+p <- heatmaply(
+  from_zero_juice,
+  hclustfun = hclust,
+  hclust_method = "average",
+  dist_method = "euclidean"
+)
+plotly::as_widget(p)
+```
+:::
+
+::: {.card}
+**From Zero — Tempo vs Energy**
+We can clearly see the inconsistencies of the spotify API in this graph. While most tempi are accurately plotted, *Cut the Bridge* is measured in half-tempo instead of the actual song BPM. Knowing the song, I think the loudness is also lower than to be expected.
+If we assume that the other measurements are correct, this album seems to be quite diverse. Most songs have a high energy, but speechiness and tempo differ quite a bit.
+```{r from_zero_scatter, echo=FALSE}
+emily |>
+  filter(!is.na(Danceability)) |>
+  filter(`Album Name` == "From Zero (Deluxe Edition)") |>
+  filter(`Track Name` != "From Zero (Intro)") |>
+  ggplot(aes(
+    x = Tempo,
+    y = Energy,
+    label = `Track Name`,
+    size = -Loudness,
+    colour = Speechiness
+  )) +
+  geom_point(alpha = 0.8) +
+  geom_text(
+    size = 3,
+    vjust = -1,
+    hjust = 0.5,
+    check_overlap = TRUE
+  ) +
+  scale_colour_viridis_c(option = "plasma", name = "Speechiness") +
+  scale_size_continuous(name = "Loudness (louder = bigger)", range = c(3, 10)) +
+  labs(
+    title = "From Zero — Tempo vs Energy",
+    subtitle = "Size = loudness (larger = louder), colour = speechiness",
+    x = "Tempo (BPM)",
+    y = "Energy"
+  ) +
+  theme_minimal()
+```
+:::
+
+
 # Chester vs Emily
 
 ## Column {width=100%}
 
-::: {.card heigth=5%}
-Chester Bennington led the band through their iconic early era — raw, aggressive, emotionally intense. 
-Since Emily Armstrong joined in 2024, the band has taken a new direction with *From Zero*. 
-This portfolio analyses and compares the musical characteristics of both eras using computational musicology.
+### Row
+
+::: {.card}
+
+When comparing the two artists, what do we look at? Chester has been with the band for 17 years, Emily 2. Let's put that into perspective. Here we compare all the linkin park song based on the most important audio features from the spotify API.
+```{r comparing artists, echo=FALSE}
+
+# Combine Chester and Emily data, label by singer
+chester_scatter <- chester |>
+  filter(!is.na(Danceability), !is.na(Tempo)) |>
+  select(`Track Name`, `Album Name`, Energy, Tempo, Loudness, Speechiness) |>
+  mutate(Singer = "Chester")
+
+emily_scatter <- emily |>
+  filter(!is.na(Danceability), !is.na(Tempo)) |>
+  filter(`Track Name` != "From Zero (Intro)") |>
+  select(`Track Name`, `Album Name`, Energy, Tempo, Loudness, Speechiness) |>
+  mutate(Singer = "Emily")
+
+bind_rows(chester_scatter, emily_scatter) |>
+  ggplot(aes(
+    x = Tempo,
+    y = Energy,
+    size = -Loudness,      # louder = bigger dot
+    colour = Speechiness,
+    shape = Singer
+  )) +
+  geom_point(alpha = 0.7) +
+  scale_colour_viridis_c(option = "plasma", name = "Speechiness") +
+  scale_size_continuous(name = "Loudness (louder = bigger)", range = c(2, 8)) +
+  scale_shape_manual(values = c("Chester" = 16, "Emily" = 17)) +
+  labs(
+    title = "Chester vs Emily — Tempo vs Energy",
+    subtitle = "Shape = singer, size = loudness (larger = louder), colour = speechiness",
+    x = "Tempo (BPM)",
+    y = "Energy"
+  ) +
+  theme_minimal()
+```
+As we can see, this corpus is far too big for a detailed comparison.
 :::
+
+::: {.card}
+When we take a look at the heatmap of the average features of each album, we see that Meteora scores relatively "average" on each feature, scoring a bit higher on energy and loudness. Because this is their most popular album, it scores most average in feature comparison and it sounds most similar to my ear, I will be comparing *Meteora* with *From Zero*, in more detail
+```{r, echo=FALSE}
+
+
+# 2. Heatmap of albums
+heatmaply(
+  album_means,
+  hclustfun = hclust,
+  hclust_method = "average",
+  dist_method = "euclidean",
+  main = "Album comparison (mean feature profiles)"
+)
+```
+
+:::
+
+
+
+
+
 
 
 
@@ -370,7 +522,6 @@ This portfolio analyses and compares the musical characteristics of both eras us
 ![](./dat/Meteora.jpg)
 
 Chester's era defined Linkin Park's signature sound: distorted guitars, rap-rock fusion, and deeply personal lyrics.
-Chester relaxes his voice far more.
 :::
 
 ::: {.card}
