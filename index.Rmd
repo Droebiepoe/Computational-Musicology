@@ -248,7 +248,7 @@ heatmaply(one_more_light_juice, hclustfun = hclust, hclust_method = "average", d
 
 ### Row
 
-::: {.card title= " Album Pairing"}
+::: {.card title= "Album Pairing"}
 In the plot below we can see the clustering of the albums. Intuitively they seem to be quite correct. *Minutes to Midnight* and *One more light* are relatively low energy mellow albums with a softer sound. *Hybrid Theory* *LIVING THINGS* and *Meteora* are their loudest most high energy albums, often upbeat with a dominant distorted guitar and intense screaming vocals in the chorus.  *A thousand suns* and *The Hunting Party* are the albums I would call furthest away from "the Linkin Park sound"; They are experimental, contain more clean piano and general acoustics and contain more soft vocals. 
 ```{r, echo=FALSE}
 
@@ -274,7 +274,7 @@ dist(album_means, method = "euclidean") |>
 
 :::
 
-::: {.card Title= "Difference Quantisised}
+::: {.card title="Difference Quantisised"}
 This heatmap shows the deviance of *A Thousand Suns* in terms of acousticness, it contains outliers on all fronts. The hunting party also shows a big standard deviation in almost every way. One can imagine them being paired together.
 We can see that *LIVING THINGS*, *Meteora* and *Hybrid Theory* indeed show a higher Energy and Loudness compared to other albums. That being said, *The Hunting Party* shows the same pattern but has a very different sound, explained by previous features.
 ```{r, echo=FALSE}
@@ -293,7 +293,7 @@ heatmaply(
 :::
 
 
-::: {.card Title= "Every album visualised in extremes"}
+::: {.card title="Every album visualised in extremes"}
 ```{r, echo=FALSE}
 
 # 3. Radar / spider chart of mean feature profiles
@@ -356,8 +356,8 @@ from_zero_juice <- emily |>
 
 
 ::: {.card}
-**From Zero — Dendrogram**
-
+**From Zero Dendrogram**
+As we will see more often in this portfolio, *Overflow* seems to be an outlier in this album, not strange that it is far from *Two-Faced* as *Overflow* is a quite soft, acoustic song with long sustain while *Two-Faced* is very fast paced- short attack, loud, distorted and intense.
 ```{r from_zero_dendrogram, echo=FALSE}
 dist(from_zero_juice, method = "euclidean") |>
   hclust(method = "average") |>
@@ -368,7 +368,7 @@ dist(from_zero_juice, method = "euclidean") |>
 :::
 
 ::: {.card}
-**From Zero — Heatmap**
+**From Zero Heatmap**
 Looking at this heatmap, the outlier of *Casualty* surprises me quite a bit. The song is quite instrumental indeed, but also scores higher than average on speechiness. My hypothesis is that this could be because the song has a very dominant simple guitar riff and is very drum heavy.
 ```{r from_zero_heatmap, echo=FALSE}
 p <- heatmaply(
@@ -558,7 +558,7 @@ Okay, this is not what I expected, at all. I understand the liveness and tempo, 
 Furthermore, when looking back at my *From Zero heatmap* from *Emily's repetoire*, we can see that the song *Overflow* scores extremely high on acousticness compared to the rest. I suspect that this one song heavily skews this graph aswell.
 I guess that this plot is nuanced when comparing various albums, but very extreme when comparing two.
 :::
-
+ 
 # Pitch/ Chromagrams
 
 ```{r chords code, echo=FALSE}
@@ -653,7 +653,7 @@ key_templates <-
 
 ### Row
 
-::: {.card Title= "Numb Keygram"}
+::: {.card title= "Numb Keygram"}
 
 Here we can see a keygram and a Chordgram of the song *Numb* by *Linking Park*, using Temperley’s proposed improvements. The dominant chords seem to be F#:min, D:maj, Gb:maj and Gb:7, Where I expected F#min, D:maj, A:maj and E:maj.
 ```{r Chromagram Numb, echo=FALSE}
@@ -678,8 +678,8 @@ NumbChroma |>
 :::
 
 
-::: {.card Title= "Faint Keygram"}
-
+::: {.card title= "Faint Keygram"}
+All The Keygrams seem relatively useless as there are a lot of keys being used. If anything, you only see intensity in the song.
 ```{r Chromagram Faint, echo=FALSE}
 FaintChroma <- read_csv("./dat/FaintChroma.csv")
 FaintChroma |> 
@@ -702,7 +702,7 @@ FaintChroma |>
 :::
 
 
-::: {.card Title= "Somewhere I Belong Keygram"}
+::: {.card title= "Somewhere I Belong Keygram"}
 
 ```{r Chromagram Somewhere I belong, echo=FALSE}
 SIBChroma <- read_csv("./dat/SIBChroma.csv")
@@ -724,6 +724,75 @@ SIBChroma |>
 ```
 
 :::
+
+
+### Row
+
+::: {.card title= "Numb Chordgram"}
+
+```{r Chromagram Numb2, echo=FALSE}
+NumbChroma |> 
+  compmus_wrangle_chroma() |> 
+  filter(row_number() %% 50L == 0L) |> 
+  compmus_match_pitch_template(
+    chord_templates,         # Change to chord_templates if desired
+    method = "euclidean",  # Try different distance metrics
+    norm = "manhattan"     # Try different norms
+  ) |>
+  ggplot(
+    aes(x = start + duration / 2, width = 50 * duration, y = name, fill = d)
+  ) +
+  geom_tile() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "")
+```
+:::
+
+::: {.card title= "Faint Chordgram"}
+Except for highlighting minor chords, the chordgrams seem to all be equally uninteresting. If anything, they highlight noise.
+```{r Chromagram Faint2, echo=FALSE}
+FaintChroma |> 
+  compmus_wrangle_chroma() |> 
+  filter(row_number() %% 50L == 0L) |> 
+  compmus_match_pitch_template(
+    chord_templates,         # Change to chord_templates if desired
+    method = "euclidean",  # Try different distance metrics
+    norm = "manhattan"     # Try different norms
+  ) |>
+  ggplot(
+    aes(x = start + duration / 2, width = 50 * duration, y = name, fill = d)
+  ) +
+  geom_tile() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "")
+```
+
+:::
+
+::: {.card title= "Somewhere I Belong Chordgram"}
+
+```{r Chromagram Somewhere I belong2, echo=FALSE}
+SIBChroma |> 
+  compmus_wrangle_chroma() |> 
+  filter(row_number() %% 50L == 0L) |> 
+  compmus_match_pitch_template(
+    chord_templates,         # Change to chord_templates if desired
+    method = "euclidean",  # Try different distance metrics
+    norm = "manhattan"     # Try different norms
+  ) |>
+  ggplot(
+    aes(x = start + duration / 2, width = 50 * duration, y = name, fill = d)
+  ) +
+  geom_tile() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "")
+```
+
+:::
+
 
 # DTW
 ## Column {width=100%}
@@ -764,12 +833,14 @@ compmus_long_distance(
   scale_fill_viridis_c(guide = NULL)
 ```
 :::
+
+
 # Timbre and SSM
 
 ## Column {width=100%}
 
 ### Row
-::: {.card Title= "The Emptiness Machine Cepstogram"}
+::: {.card title= "The Emptiness Machine Cepstogram"}
 
 ```{r Cepstrogram, echo=FALSE}
 The_Emptiness_Machine_Timbre <- read_csv("./dat/The_Emptiness_Machine_Timbre.csv")
@@ -794,9 +865,10 @@ The_Emptiness_Machine_Timbre|>
 Clearly visible from this cepstrogram is that the song starts soft, with Mike Shinoda rapping, a synthesizer and some soft drums in the background. There are 2 distinct blocks in the plot when Emily Armstrong starts singing and the guitars and drums kick in loudly. The change happens at around 55 seconds, and at around 135 seconds with a short pause in between where Shinoda builds up the tension again.
 :::
 
-::: {.card "The Emptiness Machine Self Similarity Matrix"}
+::: {.card title= "The Emptiness Machine Self Similarity Matrix"}
+![](./dat/SSM.png)
 
-```{r SSM, echo=FALSE}
+```{r SSM, eval=FALSE, echo=FALSE}
 The_Emptiness_Machine_Timbre |>
 compmus_wrangle_timbre() |> 
   filter(row_number() %% 50L == 0L) |> 
@@ -1173,3 +1245,23 @@ Now we see that the model cannot predict well, but the most imporant predictive 
 
 # Contribution
 
+::: {.card title="Final Remarks"}
+
+This portfolio set out to answer a deceptively simple question: has Linkin Park's sound meaningfully changed since Chester Bennington died and Emily Armstrong took over? The answer, it turns out, is both yes and no. The nuance is what makes it interesting.
+Looking at Chester's seven albums first, the clustering analyses reveal that *Linkin Park* was never a static band. From the raw, power and energy of *Hybrid Theory* to the electronic experimentation of *A Thousand Suns*, the hearbreaking pop vulnerability of *One More Light*, each album occupies a distinct corner of the feature space. And yet there is an identity to be found: consistently high energy, prominent loudness, and a characteristic blend of rap-influenced speechiness with melodic structure. This is what we might call "the Linkin Park sound" not a fixed formula, but a recognisable signature style.
+
+When *From Zero* enters the picture, the scatterplot and radar chart tell an initially surprising story. Emily's album sits comfortably within the range of Chester's output in terms of energy and tempo. It does not sound radically foreign. However, the radar comparison with Meteora, chosen as the most iconic of Chester's albums, does expose real differences, particularly in acousticness and liveness, partly amplified by individual outlier tracks like Overflow. Remember though that with only one album to compare against seventeen years of work, strong conclusions are dangerous. 
+
+The detailed analyses are more nuanced. The chromagrams and keygrams of *Numb* and *Faint* reveal that Linkin Park consistently favoured minor keys and emotionally charged harmonic progressions. The cepstrogram and self-similarity matrix of *The Emptiness Machine* show that the band's structural approach (building intensity across repeating sections), carries over into the Emily era. The novelty plot confirms this: the song opens with soft, energetic rap, gets louder, picks up rhythm towards the chorus, where it finishes with explosive screaming vocals. It is, structurally, a very Linkin Park song.
+
+The machine learning classification results are strong, but do not have a high validity . A k-nearest neighbour and random forest classifier can distinguish Chester's songs from Emily's, but the precision on Emily's side is low. This is largely a dataset size problem. Emily having thirteen songs against Chester's nearly ninety is not exactly christmas for any classifier. The features that matter most, according to the forest model, are acousticness, energy, and loudness, although this is heavily influenced by one song: *Overflow*. 
+
+What I hope to demonstrate with this portfolio, is that *From* Zero* is a genuine continuation of the Linkin Park sound, not a departure. Emily Armstrong has not tried to sound like Chester Bennington, nor has the band tried to recreate Hybrid Theory. 
+But the underlying musical DNA, the energy, the structure,is closer to the most famous albums, than to many previous albums. 
+The Spotify API, having all its limitations and mistakes (as Cut the Bridge's half-tempo reading shows), captures enough of this to make computational analysis possible (alhough not watertight)
+
+Apart from gaining a lot of experience using these tools and learning music theory and mathematics, I hope to have contributed towards easing the discussion whether this new album deserves its place in the iconic Linkin Park discography.
+
+
+
+:::
